@@ -44,7 +44,7 @@ def game_intro():
                 pygame.quit()
                 quit()
         
-        gameDisplay.fill(blue)
+        gameDisplay.fill(white)
         logo(x, y)
         # largeText = pygame.font.Font('freesansbold.ttf',115)
         # TextSurf, TextRect = text_objects("Turf Wars", largeText)
