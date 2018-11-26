@@ -1,6 +1,7 @@
 import pygame
 import os
 from pygame.locals import*
+import time
 
 pygame.init()
 
@@ -31,6 +32,7 @@ bright_green = (255,0,0)
 
 
 logoImg = pygame.image.load(os.path.join(image_path, 'logo.png'))
+backgroundImg = pygame.image.load(os.path.join(image_path, 'logo.jpg'))
 
 def logo(x,y):
     gameDisplay.blit(logoImg, (x,y))
@@ -79,13 +81,6 @@ def button(msg, x,y,w,h,ic,ac,action=None):
     gameDisplay.blit(textSurf, textRectangle)
 
 
-def gameloop():
-        
-    gameDisplay.fill(white)
-    button('EXIT!', 550,550,300,150,red,bright_red,exit)
-
-
-
 def game_intro():
 
     intro = True
@@ -112,6 +107,27 @@ def game_intro():
         clock.tick(15)
 
 
+
+def gameloop():
+
+    gameExit = False
+ 
+    while not gameExit:
+ 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+
+        gameDisplay.fill(white)
+        #Enter Code on this line
+        gameDisplay.blit(backgroundImg, (0, 0))
+
+
+        pygame.display.update()
+        clock.tick(15)
+
+
 game_intro()
+gameloop()
 pygame.quit()
 quit()
