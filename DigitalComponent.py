@@ -4,8 +4,8 @@ from pygame.locals import*
 
 pygame.init()
 
-display_height = 800
-display_width = 1100
+display_height = 750
+display_width = 1000
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('Turf Wars')
 clock = pygame.time.Clock()
@@ -16,6 +16,7 @@ image_path = os.path.join(resource_path, 'images') # The image folder path
 
 
 DEFAULT_FONT = "freesansbold.ttf"
+SMALL_FONT = pygame.font.Font(os.path.join("resources", "fonts", "COMIC.ttf"),40)
 LARGE_FONT  = pygame.font.Font(os.path.join("resources", "fonts", "COMIC.ttf"),80)
 
 
@@ -29,7 +30,7 @@ bright_blue = (0,0,255)
 bright_green = (255,0,0)
 
 
-logoImg = pygame.image.load(os.path.join(image_path, 'logo.png'))
+logoImg = pygame.image.load(os.path.join(image_path, 'logo.jpg'))
 
 def logo(x,y):
     gameDisplay.blit(logoImg, (x,y))
@@ -47,9 +48,29 @@ def text_objects(text, font):
     return textSurface, textSurface.get_rect()
 
 def message_display(text):
-    TextSurf, TextRect = text_objects(text, LARGE_FONT)
-    TextRect.center = ((display_width/2),(display_height/2))
-    gameDisplay.blit(TextSurf, TextRect)
+    TextSurf, TextRectangle = text_objects(text, LARGE_FONT)
+    TextRectangle.center = ((display_width/2),(display_height/2))
+    gameDisplay.blit(TextSurf, TextRectangle)
+
+
+def button(msg, x,y,w,h,ic,ac):
+# This function has the parameters of:
+# msg: What do you want the button to say on it.
+# x: The x location of the top left coordinate of the button box.
+# y: The y location of the top left coordinate of the button box.
+# w: Button width.
+# h: Button height.
+# ic: Inactive color (when a mouse is not hovering).
+# ac: Active color (when a mouse is hovering).
+    mouse = pygame.mouse.get_pos()
+    if x+w > mouse[0] > x and y+h > mouse[1] > y:
+        pygame.draw.rect(gameDisplay, ac,(x,y,w,h))
+    else:
+        pygame.draw.rect(gameDisplay, ic,(x,y,w,h))
+
+    textSurf, textRectangle = text_objects(msg, SMALL_FONT)
+    textRectangle.center = ( (x+(w/2)), (y+(h/2)) )
+    gameDisplay.blit(textSurf, textRectangle)
 
 def game_intro():
 
@@ -64,20 +85,14 @@ def game_intro():
         
         gameDisplay.fill(white)
         logo(x, y)
-        TextSurf, TextRect = text_objects("Digital Component", LARGE_FONT)
-        TextRect.center = ((display_width/2),(display_height/2))
-        gameDisplay.blit(TextSurf, TextRect)
+        TextSurf, TextRectangle = text_objects("Digital Component", LARGE_FONT)
+        TextRectangle.center = ((display_width/2),(display_height/2))
+        gameDisplay.blit(TextSurf, TextRectangle)
 
-        mouse = pygame.mouse.get_pos()
-        if 100+300 > mouse[0] > 100 and 550+150 > mouse[1] > 550:
-            pygame.draw.rect(gameDisplay, bright_blue,(100,550,300,150))
-        else:
-            pygame.draw.rect(gameDisplay, blue,(100,550,300,150))
 
-        if 400+300 > mouse[0] > 400 and 550+150 > mouse[1] > 550:
-            pygame.draw.rect(gameDisplay, bright_red,(500,550,300,150))
-        else:
-            pygame.draw.rect(gameDisplay, red,(500,550,300,150))
+
+        button('START!',150,550,300,150,bright_blue,blue)
+        button('EXIT!', 550,550,300,150,red,bright_red)
 
         pygame.display.update()
         clock.tick(15)
