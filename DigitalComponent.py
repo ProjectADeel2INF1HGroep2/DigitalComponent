@@ -30,7 +30,7 @@ bright_blue = (0,0,255)
 bright_green = (255,0,0)
 
 
-logoImg = pygame.image.load(os.path.join(image_path, 'logo.jpg'))
+logoImg = pygame.image.load(os.path.join(image_path, 'logo.png'))
 
 def logo(x,y):
     gameDisplay.blit(logoImg, (x,y))
