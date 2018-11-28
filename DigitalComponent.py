@@ -1,12 +1,12 @@
 import pygame
-import os
-import time
 from pygame.locals import *
-import random
+import sys, os, time, random
+from itertools import cycle
+
 
 pygame.init()
 
-#Screen
+#GameDisplay
 display_height = 750
 display_width = 1000
 gameDisplay = pygame.display.set_mode((display_width, display_height))
@@ -22,6 +22,7 @@ font_path = os.path.join(resource_path, 'fonts')
 #fonts
 DEFAULT_FONT = "freesansbold.ttf"
 SMALL_FONT = pygame.font.Font(os.path.join(font_path, "COMIC.ttf"),40)
+TINY_FONT = pygame.font.Font(os.path.join(font_path, "COMIC.ttf"),20)
 LARGE_FONT  = pygame.font.Font(os.path.join(font_path, "COMIC.ttf"),80)
 
 #colors
@@ -33,7 +34,7 @@ black = (0,0,0)
 white = (255,255,255)
 bright_red = (255,0,0)
 bright_blue = (0,0,255)
-bright_green = (255,0,0)
+bright_green = (0,255,0)
 
 #images
 backgroundImg = pygame.image.load(os.path.join(image_path, 'logo.jpg'))
@@ -41,6 +42,84 @@ logoImg = pygame.image.load(os.path.join(image_path, 'logo.jpg'))
 
 #imagesize
 logoImg = pygame.transform.scale(logoImg, (250,250))
+
+
+
+
+
+
+
+
+
+
+
+def enter_text(max_length, lower = False, upper = False, title = False):
+    """
+    returns user name input of max length "max length and with optional
+    string operation performed
+    """
+    pressed = ""
+    finished = False
+    # create list of allowed characters using ascii values
+    # numbers 1-9, letters a-z
+    all_chars = [i for i in range(97, 123)] +\
+                     [i for i in range(48,58)]
+
+    # create blinking underscore
+    BLINKING_UNDERSCORE = pygame.USEREVENT + 0
+    pygame.time.set_timer(BLINKING_UNDERSCORE, 800)
+    blinky = cycle(["_", " "])
+    next_blink = next(blinky)
+
+    while not finished:
+        pygame.draw.rect(gameDisplay, red, (125,175,200,40))
+        print_text(TINY_FONT, 125, 150, "Enter Name:")
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+            if event.type == BLINKING_UNDERSCORE:
+                next_blink = next(blinky)
+            # if input is in list of allowed characters, add to variable
+            elif event.type == pygame.KEYUP and event.key in all_chars \
+                 and len(pressed) < max_length:
+                # caps entry?
+                if pygame.key.get_mods() & pygame.KMOD_SHIFT or pygame.key.get_mods()\
+                   & pygame.KMOD_CAPS:
+                    pressed += chr(event.key).upper()
+                # lowercase entry
+                else:
+                    pressed += chr(event.key)
+            # otherwise, only the following are valid inputs
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_BACKSPACE:
+                    pressed = pressed[:-1]
+                elif event.key == pygame.K_SPACE:
+                    pressed += " "
+                elif event.key == pygame.K_RETURN:
+                    finished = True
+        # only draw underscore if input is not at max character length
+        if len(pressed) < max_length:
+            print_text(TINY_FONT, 130, 180, pressed + next_blink)
+        else:
+            print_text(TINY_FONT, 130, 180, pressed)
+        pygame.display.update()
+
+    # perform any selected string operations
+    if lower: pressed = pressed.lower()
+    if upper: pressed = pressed.upper()
+    if title: pressed = pressed.title()
+
+    return pressed
+
+
+
+def print_text(TINY_FONT, x, y, text, color = white):
+    """Draws a text image to display surface"""
+    text_image = TINY_FONT.render(text, True, color)
+    gameDisplay.blit(text_image, (x,y))
+
+
 
 def logo(x,y):
     gameDisplay.blit(logoImg, (x,y))
@@ -92,16 +171,22 @@ def game_intro():
         for event in pygame.event.get():
             print(event)
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+                exit()
         
-        gameDisplay.fill(white)
+        #background
+        gamemap = pygame.image.load(os.path.join(image_path, 'map.jpg'))
+        gamemap = pygame.transform.scale(gamemap,(1000,750))
+        gameDisplay.blit(gamemap, (0,0))
+
+        # logo
         logo(x, y)
+
+        # title
         TextSurf, TextRectangle = textblock("Digital Component", LARGE_FONT)
         TextRectangle.center = ((display_width / 2),((display_height *0.5)))
         gameDisplay.blit(TextSurf, TextRectangle)
 
-
+        #buttons
         button('START!',150,550,300,150,bright_blue,blue,gameloop)
         button('EXIT!', 550,550,300,150,red,bright_red,exit)
 
@@ -109,20 +194,71 @@ def game_intro():
         clock.tick(15)
 
 def gameloop():
-
+    gameDisplay.fill(white)
     gameExit = False
- 
+    fpsclock = pygame.time.Clock()
+    fps = 30
+    PurplePlayer = False
+    RedPlayer = False
+    GreenPlayer = False
+    BlackPlayer = False
+
     while not gameExit:
- 
+        fpsclock.tick(fps)
+        pressed = None
         for event in pygame.event.get():
+            print(event)
+            if event.type == pygame.KEYUP:
+                print(pygame.key.name(event.key))
+                print(ord(pygame.key.name(event.key)))
             if event.type == pygame.QUIT:
                 exit()
 
-        gamemap = pygame.image.load(os.path.join(image_path, 'map.jpg'))
-        gamemap = pygame.transform.scale(gamemap,(1000,750))
 
-        gameDisplay.blit(gamemap, (0,0))
-        #Enter Code on this line
+
+        if not PurplePlayer:
+            PurplePlayer = enter_text(15)
+
+        pygame.draw.rect(gameDisplay, purple, (90,500,150,40))
+        print_text(TINY_FONT, 100, 500, PurplePlayer)
+
+        if not RedPlayer:
+            RedPlayer = enter_text(15)
+        pygame.draw.rect(gameDisplay, red, (290,500,150,40))
+        print_text(TINY_FONT, 300, 500, RedPlayer)
+
+        if not GreenPlayer:
+            GreenPlayer = enter_text(15)
+        pygame.draw.rect(gameDisplay, green, (490,500,150,40))
+        print_text(TINY_FONT, 500, 500, GreenPlayer)
+
+        if not BlackPlayer:
+            BlackPlayer = enter_text(15)
+        pygame.draw.rect(gameDisplay, black, (690,500,150,40))
+        print_text(TINY_FONT, 700, 500, BlackPlayer)
+        button('PROCEED!',300,300,300,150,bright_green,black,game_start)
+        pygame.draw.rect(gameDisplay, white, (125,175,200,40))
+
+
+        pygame.display.update()
+        clock.tick(15)
+
+def game_start():
+
+
+    start = True
+    gameDisplay.fill(white)
+
+    while start:
+        for event in pygame.event.get():
+            print(event)
+            if event.type == pygame.QUIT:
+                exit()
+
+
+        gameDisplay.fill(white)
+
+
         pygame.display.update()
         clock.tick(15)
 
