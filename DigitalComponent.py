@@ -1,4 +1,5 @@
 import pygame
+
 from pygame.locals import *
 import sys, os, time, random
 from itertools import cycle
