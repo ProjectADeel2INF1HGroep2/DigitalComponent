@@ -25,6 +25,8 @@ SMALL_FONT = pygame.font.Font(os.path.join(font_path, "COMIC.ttf"),40)
 TINY_FONT = pygame.font.Font(os.path.join(font_path, "COMIC.ttf"),20)
 LARGE_FONT  = pygame.font.Font(os.path.join(font_path, "COMIC.ttf"),80)
 
+Lalalalalalal
+
 #colors
 purple = (128, 0, 128)
 blue = (0,0,200)
