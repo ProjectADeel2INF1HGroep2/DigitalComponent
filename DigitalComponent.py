@@ -216,6 +216,12 @@ def gameloop():
 
 
 
+        #background
+        gamemap = pygame.image.load(os.path.join(image_path, 'map.jpg'))
+        gamemap = pygame.transform.scale(gamemap,(1000,750))
+        gameDisplay.blit(gamemap, (0,0))
+
+
         if not PurplePlayer:
             PurplePlayer = enter_text(15)
 
@@ -234,12 +240,26 @@ def gameloop():
 
         if not BlackPlayer:
             BlackPlayer = enter_text(15)
+
+        gamemap = pygame.image.load(os.path.join(image_path, 'map.jpg'))
+        gamemap = pygame.transform.scale(gamemap,(1000,750))
+        gameDisplay.blit(gamemap, (0,0))
+
+
         pygame.draw.rect(gameDisplay, black, (690,500,150,40))
         print_text(TINY_FONT, 700, 500, BlackPlayer)
+        
+        pygame.draw.rect(gameDisplay, red, (290,500,150,40))
+        print_text(TINY_FONT, 300, 500, RedPlayer)
+
+        pygame.draw.rect(gameDisplay, purple, (90,500,150,40))
+        print_text(TINY_FONT, 100, 500, PurplePlayer)
+
+
+        pygame.draw.rect(gameDisplay, green, (490,500,150,40))
+        print_text(TINY_FONT, 500, 500, GreenPlayer)
+
         button('PROCEED!',300,300,300,150,bright_green,black,game_start)
-        pygame.draw.rect(gameDisplay, white, (125,175,200,40))
-
-
         pygame.display.update()
         clock.tick(15)
 
