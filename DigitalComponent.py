@@ -1,5 +1,4 @@
 import pygame
-import damian
 from pygame.locals import *
 import sys, os, time, random
 from itertools import cycle
