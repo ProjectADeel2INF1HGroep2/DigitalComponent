@@ -41,7 +41,7 @@ backgroundImg = pygame.image.load(os.path.join(image_path, 'logo.jpg'))
 logoImg = pygame.image.load(os.path.join(image_path, 'logo.jpg'))
 
 #imagesize
-logoImg = pygame.transform.scale(logoImg, (int(display_height/3),int(display_width/4)))
+logoImg = pygame.transform.scale(logoImg, (250,250))
 
 
 
@@ -120,12 +120,6 @@ def print_text(TINY_FONT, x, y, text, color = white):
     gameDisplay.blit(text_image, (x,y))
 
 
-def background():
-        #background
-    gamemap = pygame.image.load(os.path.join(image_path, 'map.jpg'))
-    gamemap = pygame.transform.scale(gamemap,(display_width,display_height))
-    gameDisplay.blit(gamemap, (0,0))
-
 
 def logo(x,y):
     gameDisplay.blit(logoImg, (x,y))
@@ -178,9 +172,13 @@ def game_intro():
             print(event)
             if event.type == pygame.QUIT:
                 exit()
+        
+        #background
+        gamemap = pygame.image.load(os.path.join(image_path, 'map.jpg'))
+        gamemap = pygame.transform.scale(gamemap,(1000,750))
+        gameDisplay.blit(gamemap, (0,0))
 
         # logo
-        background()
         logo(x, y)
 
         # title
@@ -216,7 +214,13 @@ def gameloop():
             if event.type == pygame.QUIT:
                 exit()
 
-        background()
+
+
+        #background
+        gamemap = pygame.image.load(os.path.join(image_path, 'map.jpg'))
+        gamemap = pygame.transform.scale(gamemap,(1000,750))
+        gameDisplay.blit(gamemap, (0,0))
+
 
         if not PurplePlayer:
             PurplePlayer = enter_text(15)
@@ -237,7 +241,10 @@ def gameloop():
         if not BlackPlayer:
             BlackPlayer = enter_text(15)
 
-        background()
+        gamemap = pygame.image.load(os.path.join(image_path, 'map.jpg'))
+        gamemap = pygame.transform.scale(gamemap,(1000,750))
+        gameDisplay.blit(gamemap, (0,0))
+
 
         pygame.draw.rect(gameDisplay, black, (690,500,150,40))
         print_text(TINY_FONT, 700, 500, BlackPlayer)
@@ -248,11 +255,11 @@ def gameloop():
         pygame.draw.rect(gameDisplay, purple, (90,500,150,40))
         print_text(TINY_FONT, 100, 500, PurplePlayer)
 
+
         pygame.draw.rect(gameDisplay, green, (490,500,150,40))
         print_text(TINY_FONT, 500, 500, GreenPlayer)
 
-        button('PROCEED!',300,300,300,150,bright_green,green,game_start)
-
+        button('PROCEED!',300,300,300,150,bright_green,black,game_start)
         pygame.display.update()
         clock.tick(15)
 
@@ -268,9 +275,8 @@ def game_start():
             if event.type == pygame.QUIT:
                 exit()
 
-        background()
 
-
+        gameDisplay.fill(white)
 
 
         pygame.display.update()
