@@ -17,9 +17,9 @@ font_path = os.path.join(resource_path, 'fonts')
 
 #fonts
 DEFAULT_FONT = "freesansbold.ttf"
-SMALL_FONT = pygame.font.Font(os.path.join(font_path, "COMIC.ttf"),40)
-TINY_FONT = pygame.font.Font(os.path.join(font_path, "COMIC.ttf"),20)
-LARGE_FONT  = pygame.font.Font(os.path.join(font_path, "COMIC.ttf"),80)
+SMALL_FONT = pygame.font.Font(os.path.join(font_path, "SourceSansPro-SemiBold.otf"),40)
+TINY_FONT = pygame.font.Font(os.path.join(font_path, "SourceSansPro-SemiBold.otf"),20)
+LARGE_FONT  = pygame.font.Font(os.path.join(font_path, "SourceSansPro-SemiBold.otf"),80)
 
 #colors
 purple = (128, 0, 128)

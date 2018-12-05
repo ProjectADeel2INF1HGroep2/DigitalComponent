@@ -8,13 +8,13 @@ import random   # For random events
 pygame.init()
 
 def background():
-    gamemap = pygame.image.load(os.path.join(image_path, 'map.jpg'))
+    gamemap = pygame.image.load(os.path.join(image_path, 'map-blur.jpg'))
     gamemap = pygame.transform.scale(gamemap,(display_width,display_height))
     gameDisplay.blit(gamemap, (0,0))
 
 def logo(x,y):
-    logoImg = pygame.image.load(os.path.join(image_path, 'logo.jpg'))
-    logoImg = pygame.transform.scale(logoImg, (int(display_height/3),int(display_width/4)))
+    logoImg = pygame.image.load(os.path.join(image_path, 'logo.png'))
+    logoImg = pygame.transform.scale(logoImg, (int(display_height/2),int(display_width/2.66)))
     gameDisplay.blit(logoImg, (x,y))
     
 def exit():
@@ -27,21 +27,21 @@ def start_screen():
 
     while intro:
         for event in pygame.event.get():
-            print(event)
+            # print(event)
             if event.type == pygame.QUIT:
                 exit()
 
         background()
-        logo(display_width * 0.10, display_height * 0.10)
+        logo(display_width * 0.31, display_height * 0.1)
 
-        # title
-        TextSurf, TextRectangle = textblock("Digital Component", LARGE_FONT)
-        TextRectangle.center = ((display_width / 2),((display_height *0.5)))
-        gameDisplay.blit(TextSurf, TextRectangle)
+        # # title
+        # TextSurf, TextRectangle = textblock("Turf Wars", LARGE_FONT)
+        # TextRectangle.center = ((display_width / 2),((display_height *0.5)))
+        # gameDisplay.blit(TextSurf, TextRectangle)
 
         #buttons
-        button('START!',150,550,300,150,bright_blue,blue,playerinput_screen)
-        button('EXIT!', 550,550,300,150,red,bright_red,exit)
+        button('Start',150,550,300,150,bright_blue,blue,playerinput_screen)
+        button('Exit', 550,550,300,150,red,bright_red,exit)
 
         pygame.display.update()
         clock.tick(15)
@@ -63,7 +63,6 @@ def playerinput_screen():
         fpsclock.tick(fps)
         pressed = None
         for event in pygame.event.get():
-            print(event)
             if event.type == pygame.KEYUP:
                 print(pygame.key.name(event.key))
                 print(ord(pygame.key.name(event.key)))
@@ -76,17 +75,17 @@ def playerinput_screen():
             PurplePlayer = enter_text(15)
 
         pygame.draw.rect(gameDisplay, purple, (90,500,150,40))
-        print_text(TINY_FONT, 100, 500, PurplePlayer)
+        print_text(TINY_FONT, 100, 500, PurplePlayer, white)
 
         if not RedPlayer:
             RedPlayer = enter_text(15)
         pygame.draw.rect(gameDisplay, red, (290,500,150,40))
-        print_text(TINY_FONT, 300, 500, RedPlayer)
+        print_text(TINY_FONT, 300, 500, RedPlayer, white)
 
         if not GreenPlayer:
             GreenPlayer = enter_text(15)
         pygame.draw.rect(gameDisplay, green, (490,500,150,40))
-        print_text(TINY_FONT, 500, 500, GreenPlayer)
+        print_text(TINY_FONT, 500, 500, GreenPlayer, white)
 
         if not BlackPlayer:
             BlackPlayer = enter_text(15)
@@ -94,16 +93,16 @@ def playerinput_screen():
         background()
 
         pygame.draw.rect(gameDisplay, black, (690,500,150,40))
-        print_text(TINY_FONT, 700, 500, BlackPlayer)
+        print_text(TINY_FONT, 700, 500, BlackPlayer, white)
         
         pygame.draw.rect(gameDisplay, red, (290,500,150,40))
-        print_text(TINY_FONT, 300, 500, RedPlayer)
+        print_text(TINY_FONT, 300, 500, RedPlayer, white)
 
         pygame.draw.rect(gameDisplay, purple, (90,500,150,40))
-        print_text(TINY_FONT, 100, 500, PurplePlayer)
+        print_text(TINY_FONT, 100, 500, PurplePlayer, white)
 
         pygame.draw.rect(gameDisplay, green, (490,500,150,40))
-        print_text(TINY_FONT, 500, 500, GreenPlayer)
+        print_text(TINY_FONT, 500, 500, GreenPlayer, white)
 
         button('PROCEED!',300,300,300,150,bright_green,green,gamescreen_3)
 
