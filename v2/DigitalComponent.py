@@ -1,9 +1,8 @@
 import pygame
-
-
 from local_variables import *
 from click_button import *
 from name_input import *
+from count_resources import *
 
 pygame.init()
 
@@ -109,6 +108,8 @@ def playerinput_screen():
         print_text(TINY_FONT, 500, 500, GreenPlayer)
 
         button('PROCEED!',300,300,300,150,bright_green,green,gamescreen_3)
+
+        count_resources()
 
         pygame.display.update()
         clock.tick(15)
