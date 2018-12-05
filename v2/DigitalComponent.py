@@ -1,6 +1,5 @@
 import pygame
-from pygame.locals import *
-import sys, time
+
 
 from local_variables import *
 from click_button import *
