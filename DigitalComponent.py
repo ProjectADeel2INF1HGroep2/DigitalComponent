@@ -1,169 +1,29 @@
 import pygame
-from pygame.locals import *
-import sys, os, time, random
-from itertools import cycle
+from local_variables import *
+import sys, time
+from click_button import *
+from name_input import *
+from count_resources import *
 
+import random   # For random events
 
 pygame.init()
 
-#GameDisplay
-display_height = 750
-display_width = 1000
-gameDisplay = pygame.display.set_mode((display_width, display_height))
-pygame.display.set_caption('Turf Wars')
-clock = pygame.time.Clock()
-
-#paths
-current_path = os.path.dirname(__file__) # Where your .py file is located
-resource_path = os.path.join(current_path, 'resources') # The resource folder path
-image_path = os.path.join(resource_path, 'images') # The image folder path
-font_path = os.path.join(resource_path, 'fonts')
-
-#fonts
-DEFAULT_FONT = "freesansbold.ttf"
-SMALL_FONT = pygame.font.Font(os.path.join(font_path, "COMIC.ttf"),40)
-TINY_FONT = pygame.font.Font(os.path.join(font_path, "COMIC.ttf"),20)
-LARGE_FONT  = pygame.font.Font(os.path.join(font_path, "COMIC.ttf"),80)
-
-#colors
-purple = (128, 0, 128)
-blue = (0,0,200)
-red = (200,0,0)
-green = (0,200,0)
-black = (0,0,0)
-white = (255,255,255)
-bright_red = (255,0,0)
-bright_blue = (0,0,255)
-bright_green = (0,255,0)
-
-#images
-backgroundImg = pygame.image.load(os.path.join(image_path, 'logo.jpg'))
-logoImg = pygame.image.load(os.path.join(image_path, 'logo.jpg'))
-
-#imagesize
-logoImg = pygame.transform.scale(logoImg, (250,250))
-
-
-
-
-
-
-
-
-
-
-
-def enter_text(max_length, lower = False, upper = False, title = False):
-    """
-    returns user name input of max length "max length and with optional
-    string operation performed
-    """
-    pressed = ""
-    finished = False
-    # create list of allowed characters using ascii values
-    # numbers 1-9, letters a-z
-    all_chars = [i for i in range(97, 123)] +\
-                     [i for i in range(48,58)]
-
-    # create blinking underscore
-    BLINKING_UNDERSCORE = pygame.USEREVENT + 0
-    pygame.time.set_timer(BLINKING_UNDERSCORE, 800)
-    blinky = cycle(["_", " "])
-    next_blink = next(blinky)
-
-    while not finished:
-        pygame.draw.rect(gameDisplay, red, (125,175,200,40))
-        print_text(TINY_FONT, 125, 150, "Enter Name:")
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            if event.type == BLINKING_UNDERSCORE:
-                next_blink = next(blinky)
-            # if input is in list of allowed characters, add to variable
-            elif event.type == pygame.KEYUP and event.key in all_chars \
-                 and len(pressed) < max_length:
-                # caps entry?
-                if pygame.key.get_mods() & pygame.KMOD_SHIFT or pygame.key.get_mods()\
-                   & pygame.KMOD_CAPS:
-                    pressed += chr(event.key).upper()
-                # lowercase entry
-                else:
-                    pressed += chr(event.key)
-            # otherwise, only the following are valid inputs
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_BACKSPACE:
-                    pressed = pressed[:-1]
-                elif event.key == pygame.K_SPACE:
-                    pressed += " "
-                elif event.key == pygame.K_RETURN:
-                    finished = True
-        # only draw underscore if input is not at max character length
-        if len(pressed) < max_length:
-            print_text(TINY_FONT, 130, 180, pressed + next_blink)
-        else:
-            print_text(TINY_FONT, 130, 180, pressed)
-        pygame.display.update()
-
-    # perform any selected string operations
-    if lower: pressed = pressed.lower()
-    if upper: pressed = pressed.upper()
-    if title: pressed = pressed.title()
-
-    return pressed
-
-
-
-def print_text(TINY_FONT, x, y, text, color = white):
-    """Draws a text image to display surface"""
-    text_image = TINY_FONT.render(text, True, color)
-    gameDisplay.blit(text_image, (x,y))
-
-
+def background():
+    gamemap = pygame.image.load(os.path.join(image_path, 'map.jpg'))
+    gamemap = pygame.transform.scale(gamemap,(display_width,display_height))
+    gameDisplay.blit(gamemap, (0,0))
 
 def logo(x,y):
+    logoImg = pygame.image.load(os.path.join(image_path, 'logo.jpg'))
+    logoImg = pygame.transform.scale(logoImg, (int(display_height/3),int(display_width/4)))
     gameDisplay.blit(logoImg, (x,y))
-
-x = (display_width * 0.10)
-y = (display_height * 0.10)
     
 def exit():
     pygame.quit()
     quit()
 
-def textblock(text, font):
-    textSurface = font.render(text, True, black)
-    return textSurface, textSurface.get_rect()
-
-def textdisplay(text):
-    TextSurf, TextRectangle = textblock(text, LARGE_FONT)
-    TextRectangle.center = ((display_width/2),(display_height/2))
-    gameDisplay.blit(TextSurf, TextRectangle)
-
-def button(msg, x,y,w,h,ic,ac,action=None):
-# This function has the parameters of:
-# msg: Message you want to display
-# x: The x location of the top left of the button box.
-# y: The y location of the top left of the button box.
-# w: horizontal width.
-# h: vertical height.
-# ic: Inactive color (when a mouse is not hovering).
-# ac: Active color (when a mouse is hovering).
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
-
-    if x+w > mouse[0] > x and y+h > mouse[1] > y:
-        pygame.draw.rect(gameDisplay, ac,(x,y,w,h))
-        if click[0] == 1 and action != None:
-                action()      
-    else:
-        pygame.draw.rect(gameDisplay, ic,(x,y,w,h))
-
-    textSurf, textRectangle = textblock(msg, SMALL_FONT)
-    textRectangle.center = ( (x+(w/2)), (y+(h/2)) )
-    gameDisplay.blit(textSurf, textRectangle)
-
-def game_intro():
+def start_screen():
 
     intro = True
 
@@ -172,14 +32,9 @@ def game_intro():
             print(event)
             if event.type == pygame.QUIT:
                 exit()
-        
-        #background
-        gamemap = pygame.image.load(os.path.join(image_path, 'map.jpg'))
-        gamemap = pygame.transform.scale(gamemap,(1000,750))
-        gameDisplay.blit(gamemap, (0,0))
 
-        # logo
-        logo(x, y)
+        background()
+        logo(display_width * 0.10, display_height * 0.10)
 
         # title
         TextSurf, TextRectangle = textblock("Digital Component", LARGE_FONT)
@@ -187,13 +42,16 @@ def game_intro():
         gameDisplay.blit(TextSurf, TextRectangle)
 
         #buttons
-        button('START!',150,550,300,150,bright_blue,blue,gameloop)
+        button('START!',150,550,300,150,bright_blue,blue,playerinput_screen)
         button('EXIT!', 550,550,300,150,red,bright_red,exit)
 
         pygame.display.update()
         clock.tick(15)
 
-def gameloop():
+def player_amount_screen():
+    background()
+    
+def playerinput_screen():
     gameDisplay.fill(white)
     gameExit = False
     fpsclock = pygame.time.Clock()
@@ -214,13 +72,7 @@ def gameloop():
             if event.type == pygame.QUIT:
                 exit()
 
-
-
-        #background
-        gamemap = pygame.image.load(os.path.join(image_path, 'map.jpg'))
-        gamemap = pygame.transform.scale(gamemap,(1000,750))
-        gameDisplay.blit(gamemap, (0,0))
-
+        background()
 
         if not PurplePlayer:
             PurplePlayer = enter_text(15)
@@ -241,10 +93,7 @@ def gameloop():
         if not BlackPlayer:
             BlackPlayer = enter_text(15)
 
-        gamemap = pygame.image.load(os.path.join(image_path, 'map.jpg'))
-        gamemap = pygame.transform.scale(gamemap,(1000,750))
-        gameDisplay.blit(gamemap, (0,0))
-
+        background()
 
         pygame.draw.rect(gameDisplay, black, (690,500,150,40))
         print_text(TINY_FONT, 700, 500, BlackPlayer)
@@ -255,37 +104,93 @@ def gameloop():
         pygame.draw.rect(gameDisplay, purple, (90,500,150,40))
         print_text(TINY_FONT, 100, 500, PurplePlayer)
 
-
         pygame.draw.rect(gameDisplay, green, (490,500,150,40))
         print_text(TINY_FONT, 500, 500, GreenPlayer)
 
-        button('PROCEED!',300,300,300,150,bright_green,black,game_start)
+        button('PROCEED!',300,300,300,150,bright_green,green,gamescreen_3)
+
         pygame.display.update()
         clock.tick(15)
 
-def game_start():
-
-
+def gamescreen_3():
     start = True
-    gameDisplay.fill(white)
+    background()
+
+    # 'Hardcore Mode'
+    hardcore_setting = False
+    hardcore_color = red
+    event_list = ['You gain 1 resource', 'You gain 3 resources', 'You gain 5 resources',
+                  'You lose 1 resource', 'You lose 3 resources', 'You lose 5 resources',
+                  'You gain 1 troop', 'You gain 3 troops', 'You gain 5 troops',
+                  'You lose 1 troop', 'You lose 3 troops', 'You lose 5 troops']
+    event_msg = random.choice(event_list)
+    event_active = False
 
     while start:
+
+        # 'Hardcore Mode'
+        hardcore_state = TINY_FONT.render(str(hardcore_setting), True, white)   # True / False Text
+        hardcore_txt = TINY_FONT.render('Hardcore mode:', True, white)          # Hardcore mode Text
+        event_txt = TINY_FONT.render(event_msg, True, black)                    # Random Events Text
+        event_button_txt = TINY_FONT.render("Random Event", True, white)        # Event Button Text
+
         for event in pygame.event.get():
-            print(event)
+            #print(event)
             if event.type == pygame.QUIT:
                 exit()
 
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                # 'Hardcore Mode'
+                if hardcore_button.collidepoint(event.pos):     # If hardcore button is clicked
+                    background()                    # Refill background to white before redrawing
+                    hardcore_setting = not hardcore_setting     # Toggle hardcore_setting between True / False
+                    if hardcore_setting:                        # if True
+                        hardcore_color = (0, 255, 0)            # Green
+                    else:                                       # Else
+                        hardcore_color = red                    # Red
 
-        gameDisplay.fill(white)
+                elif event_button.collidepoint(event.pos) and not event_active:                 # If event button is clicked and an event is not already open
+                    event_active = True                                                         # Set event active to true
+                    background()                                                  			   # Refill background before redrawing
+                    event_msg = random.choice(event_list)                                       # Get a random event from event list
+                    pygame.draw.rect(gameDisplay, (50, 100, 100), event_background)             # Draw event background
+                    pygame.draw.rect(gameDisplay, (30, 30, 30), event_close)                    # Draw event closing button
+                    pygame.draw.line(gameDisplay, red, (event_close.x, event_close.y),          # Draw event closing button cross
+                                     (event_close.x + 28, event_close.y + 28), 2)
+                    pygame.draw.line(gameDisplay, red, (event_close.x, event_close.y+28),
+                                     (event_close.x + 28, event_close.y), 2)
+                    gameDisplay.blit(event_txt, (event_background.x+10, event_background.y+5))  # Blit random event text
 
+                elif event_close.collidepoint(event.pos):                                       # If event closing button is clicked
+                    event_active = False                                                        # Set event active to false
+                    background()                    			                                # Reset board
+
+        # 'Hardcore Mode'
+        hardcore_button = pygame.Rect(890, 30, 60, 30)                                         # The "button" rect
+        hardcore_bg = pygame.Rect(hardcore_button.x - 160, hardcore_button.y - 5,              # Background rect, scaled to button rect
+                                  hardcore_button.width + 170, hardcore_button.height + 10)
+        pygame.draw.rect(gameDisplay, black, hardcore_bg)                                      # Draw background
+        pygame.draw.rect(gameDisplay, hardcore_color, hardcore_button)                         # Draw button
+        gameDisplay.blit(hardcore_state, (hardcore_button.x + 5, hardcore_button.y))           # Blit button state, position relative to button rect
+        gameDisplay.blit(hardcore_txt, (hardcore_button.x - 150, hardcore_button.y))           # Blit hardcore mode text, left of button rect
+
+
+        # Events
+        event_button = pygame.Rect(hardcore_button.x - 160, hardcore_button.y + 50,            # Event button
+                                   hardcore_button.width + 170, hardcore_button.height + 10)
+        event_background = pygame.Rect(display_width/4, display_height/4,                      # Event background
+                                   hardcore_button.width + 270, hardcore_button.height + 100)
+        event_close = pygame.Rect(event_background.x + event_background.width - 30,            # Event closing button
+                                  event_background.y, 30, 30)
+
+        if hardcore_setting:                                                                   # If hardcore is set to True
+            pygame.draw.rect(gameDisplay, (50, 130, 130), event_button)                        # Draw event button
+            gameDisplay.blit(event_button_txt, (event_button.x + 10, event_button.y + 5))      # Blit event button text
 
         pygame.display.update()
         clock.tick(15)
 
-
-game_intro()
-
-
+start_screen()
 
 
 exit()
