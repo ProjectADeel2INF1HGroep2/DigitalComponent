@@ -5,6 +5,7 @@ import sys, time
 from local_variables import *
 from click_button import *
 from name_input import *
+from count_resources import *
 
 pygame.init()
 
