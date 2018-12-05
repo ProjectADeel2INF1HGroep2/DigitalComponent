@@ -34,6 +34,7 @@ def count_resources():
 
         # Continues to the next player and puts the playerResources on zero
         current_player = current_player + 1
+
         player_resources = 0
 
     # Resets the loop

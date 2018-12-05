@@ -1,7 +1,4 @@
 import pygame
-from pygame.locals import *
-import sys, time
-
 from local_variables import *
 from click_button import *
 from name_input import *
@@ -105,6 +102,8 @@ def gameloop():
         print_text(TINY_FONT, 500, 500, GreenPlayer)
 
         button('PROCEED!',300,300,300,150,bright_green,green,game_start)
+
+        count_resources()
 
         pygame.display.update()
         clock.tick(15)
