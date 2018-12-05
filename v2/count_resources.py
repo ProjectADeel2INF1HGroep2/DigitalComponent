@@ -1,4 +1,4 @@
-def count_resources:
+def count_resources():
 
     # TODO: Build a while loop which keeps going if the game is active
     # TODO: Add a turn counter in the game loop
