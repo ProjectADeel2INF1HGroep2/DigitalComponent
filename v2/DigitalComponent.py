@@ -1,5 +1,6 @@
 import pygame
 from local_variables import *
+import sys, time
 from click_button import *
 from name_input import *
 from count_resources import *
@@ -49,9 +50,6 @@ def start_screen():
 
 def player_amount_screen():
     background()
-
-
-
     
 def playerinput_screen():
     gameDisplay.fill(white)
@@ -111,14 +109,12 @@ def playerinput_screen():
 
         button('PROCEED!',300,300,300,150,bright_green,green,gamescreen_3)
 
-        count_resources()
-
         pygame.display.update()
         clock.tick(15)
 
 def gamescreen_3():
     start = True
-    gameDisplay.fill(white)
+    background()
 
     # 'Hardcore Mode'
     hardcore_setting = False
@@ -146,7 +142,7 @@ def gamescreen_3():
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 # 'Hardcore Mode'
                 if hardcore_button.collidepoint(event.pos):     # If hardcore button is clicked
-                    gameDisplay.fill(white)                     # Refill background to white before redrawing
+                    background()                    # Refill background to white before redrawing
                     hardcore_setting = not hardcore_setting     # Toggle hardcore_setting between True / False
                     if hardcore_setting:                        # if True
                         hardcore_color = (0, 255, 0)            # Green
@@ -155,7 +151,7 @@ def gamescreen_3():
 
                 elif event_button.collidepoint(event.pos) and not event_active:                 # If event button is clicked and an event is not already open
                     event_active = True                                                         # Set event active to true
-                    gameDisplay.fill(white)                                                     # Refill background to white before redrawing
+                    background()                                                  			   # Refill background before redrawing
                     event_msg = random.choice(event_list)                                       # Get a random event from event list
                     pygame.draw.rect(gameDisplay, (50, 100, 100), event_background)             # Draw event background
                     pygame.draw.rect(gameDisplay, (30, 30, 30), event_close)                    # Draw event closing button
@@ -167,7 +163,7 @@ def gamescreen_3():
 
                 elif event_close.collidepoint(event.pos):                                       # If event closing button is clicked
                     event_active = False                                                        # Set event active to false
-                    gameDisplay.fill(white)                                                     # Reset board to white
+                    background()                    			                                # Reset board
 
         # 'Hardcore Mode'
         hardcore_button = pygame.Rect(890, 30, 60, 30)                                         # The "button" rect
