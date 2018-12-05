@@ -20,7 +20,7 @@ def exit():
     pygame.quit()
     quit()
 
-def game_intro():
+def start_screen():
 
     intro = True
 
@@ -39,13 +39,19 @@ def game_intro():
         gameDisplay.blit(TextSurf, TextRectangle)
 
         #buttons
-        button('START!',150,550,300,150,bright_blue,blue,gameloop)
+        button('START!',150,550,300,150,bright_blue,blue,playerinput_screen)
         button('EXIT!', 550,550,300,150,red,bright_red,exit)
 
         pygame.display.update()
         clock.tick(15)
 
-def gameloop():
+def player_amount_screen():
+    background()
+
+
+
+    
+def playerinput_screen():
     gameDisplay.fill(white)
     gameExit = False
     fpsclock = pygame.time.Clock()
@@ -101,14 +107,14 @@ def gameloop():
         pygame.draw.rect(gameDisplay, green, (490,500,150,40))
         print_text(TINY_FONT, 500, 500, GreenPlayer)
 
-        button('PROCEED!',300,300,300,150,bright_green,green,game_start)
+        button('PROCEED!',300,300,300,150,bright_green,green,gamescreen_3)
 
         count_resources()
 
         pygame.display.update()
         clock.tick(15)
 
-def game_start():
+def gamescreen_3():
     start = True
     gameDisplay.fill(white)
 
@@ -123,7 +129,7 @@ def game_start():
         pygame.display.update()
         clock.tick(15)
 
-game_intro()
+start_screen()
 
 
 exit()
