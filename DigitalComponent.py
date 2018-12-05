@@ -1,6 +1,4 @@
 import pygame
-from local_variables import *
-import sys, time
 from click_button import *
 from name_input import *
 from count_resources import *
