@@ -4,6 +4,7 @@ def count_resources():
     # TODO: Add a turn counter in the game loop
     # TODO: Store the values per player so they can be remembered and used again.
     # TODO: Make the amount of players variable
+    # TODO: Show the names filled in at the beginning
 
     # Defining the variables
     global current_player

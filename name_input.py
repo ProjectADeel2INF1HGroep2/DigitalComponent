@@ -24,7 +24,7 @@ def enter_text(max_length, lower = False, upper = False, title = False):
 
     while not finished:
         pygame.draw.rect(gameDisplay, red, (125,175,200,40))
-        print_text(TINY_FONT, 125, 150, "Enter Name:")
+        print_text(TINY_FONT, 125, 150, "Enter Name:", black)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
