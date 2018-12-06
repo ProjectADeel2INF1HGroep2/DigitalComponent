@@ -19,19 +19,8 @@ Give examples
 
 A step by step series of examples that tell you how to get a development env running
 
-Say what the step will be
+You just have to download the files in the repository and run DigitalComponent.py
 
 ```
-Give the example
+run DigitalComponent.py
 ```
-
-And repeat
-
-```
-until finished
-```
-
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
