@@ -74,37 +74,43 @@ def playerinput_screen():
         if not PurplePlayer:
             PurplePlayer = enter_text(15)
 
-        pygame.draw.rect(gameDisplay, purple, (90,500,150,40))
-        print_text(TINY_FONT, 100, 505, PurplePlayer, white)
+        pygame.draw.rect(gameDisplay, purple, (120,500,150,40))
+        print_text(TINY_FONT, 130, 505, PurplePlayer, white)
 
         if not RedPlayer:
             RedPlayer = enter_text(15)
-        pygame.draw.rect(gameDisplay, red, (290,500,150,40))
-        print_text(TINY_FONT, 300, 505, RedPlayer, white)
+        pygame.draw.rect(gameDisplay, red, (320,500,150,40))
+        print_text(TINY_FONT, 330, 505, RedPlayer, white)
 
         if not GreenPlayer:
             GreenPlayer = enter_text(15)
-        pygame.draw.rect(gameDisplay, green, (490,500,150,40))
-        print_text(TINY_FONT, 500, 505, GreenPlayer, white)
+        pygame.draw.rect(gameDisplay, green, (520,500,150,40))
+        print_text(TINY_FONT, 530, 505, GreenPlayer, white)
 
         if not BlackPlayer:
             BlackPlayer = enter_text(15)
 
         background()
 
-        pygame.draw.rect(gameDisplay, black, (690,500,150,40))
-        print_text(TINY_FONT, 700, 505, BlackPlayer, white)
-        
-        pygame.draw.rect(gameDisplay, red, (290,500,150,40))
-        print_text(TINY_FONT, 300, 505, RedPlayer, white)
+        playerText = "Player 1:"
 
-        pygame.draw.rect(gameDisplay, purple, (90,500,150,40))
-        print_text(TINY_FONT, 100, 505, PurplePlayer, white)
+        print_text(TINY_FONT, 725, 470, "Player 4:", black)
+        pygame.draw.rect(gameDisplay, black, (720,500,150,40))
+        print_text(TINY_FONT, 730, 505, BlackPlayer, white)
 
-        pygame.draw.rect(gameDisplay, green, (490,500,150,40))
-        print_text(TINY_FONT, 500, 505, GreenPlayer, white)
+        print_text(TINY_FONT, 325, 470, "Player 2:", black)
+        pygame.draw.rect(gameDisplay, red, (320,500,150,40))
+        print_text(TINY_FONT, 330, 505, RedPlayer, white)
 
-        button('Proceed',316,300,300,150,bright_green,green,gamescreen_3)
+        print_text(TINY_FONT, 125, 470, "Player 1:", black)
+        pygame.draw.rect(gameDisplay, purple, (120,500,150,40))
+        print_text(TINY_FONT, 130, 505, PurplePlayer, white)
+
+        print_text(TINY_FONT, 525, 470, "Player 3:", black)
+        pygame.draw.rect(gameDisplay, green, (520,500,150,40))
+        print_text(TINY_FONT, 530, 505, GreenPlayer, white)
+
+        button('Proceed',350,250,300,150,bright_green,green,gamescreen_3)
 
         pygame.display.update()
         clock.tick(15)
