@@ -1,9 +1,8 @@
 import pygame
+import random
 from click_button import *
 from name_input import *
 from count_resources import *
-
-import random   # For random events
 
 pygame.init()
 
@@ -12,14 +11,17 @@ def background():
     gamemap = pygame.transform.scale(gamemap,(display_width,display_height))
     gameDisplay.blit(gamemap, (0,0))
 
+
 def logo(x,y):
     logoImg = pygame.image.load(os.path.join(image_path, 'logo.png'))
     logoImg = pygame.transform.scale(logoImg, (int(display_height/2),int(display_width/2.66)))
     gameDisplay.blit(logoImg, (x,y))
-    
+
+
 def exit():
     pygame.quit()
     quit()
+
 
 def start_screen():
 
@@ -48,16 +50,17 @@ def start_screen():
 
 def player_amount_screen():
     background()
-    
+
+
 def playerinput_screen():
     gameDisplay.fill(white)
     gameExit = False
     fpsclock = pygame.time.Clock()
     fps = 30
-    PurplePlayer = False
-    RedPlayer = False
-    GreenPlayer = False
-    BlackPlayer = False
+    global PurplePlayer
+    global RedPlayer
+    global GreenPlayer
+    global BlackPlayer
 
     while not gameExit:
         fpsclock.tick(fps)
@@ -115,9 +118,17 @@ def playerinput_screen():
         pygame.display.update()
         clock.tick(15)
 
+
 def gamescreen_3():
     start = True
     background()
+
+    print(BlackPlayer)
+    print(RedPlayer)
+    print(GreenPlayer)
+    print(PurplePlayer)
+
+    resource_counter()
 
     # 'Hardcore Mode'
     hardcore_setting = False
@@ -192,6 +203,7 @@ def gamescreen_3():
 
         pygame.display.update()
         clock.tick(15)
+
 
 start_screen()
 
