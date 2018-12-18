@@ -38,5 +38,5 @@ RedPlayer = 0
 GreenPlayer = 0
 BlackPlayer = 0
 
-# Turns
-turns = 0
+# Rounds
+rounds = 0

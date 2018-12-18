@@ -124,7 +124,7 @@ def resource_counter():
     # TODO: Add + & - buttons for adding and subtracting resources (instead of typing).
 
     # Defining the variables
-    global turns
+    global rounds
     global current_player
     current_player = 1
     global player_resources
@@ -148,12 +148,16 @@ def resource_counter():
             current_player_name = BlackPlayer
 
         # Let the user input the amount of land they own
+        print_text(SMALL_FONT, 800, 675, "Rounds: " + str(rounds), white)
         yellow_amount = enter_resources(2, "yellow", str(current_player_name))
         background()
+        print_text(SMALL_FONT, 800, 675, "Rounds: " + str(rounds), white)
         orange_amount = enter_resources(2, "orange", str(current_player_name))
         background()
+        print_text(SMALL_FONT, 800, 675, "Rounds: " + str(rounds), white)
         blue_amount = enter_resources(2, "blue", str(current_player_name))
         background()
+        print_text(SMALL_FONT, 800, 675, "Rounds: " + str(rounds), white)
         red_amount = enter_resources(2, "red", str(current_player_name))
         background()
 
@@ -175,8 +179,7 @@ def resource_counter():
 
     # Resets the loop
     current_player = 1
-    turns = turns + 1
-    print_text(SMALL_FONT, 825, 675, "Turns: " + str(turns), white)
+    rounds = rounds + 1
 
 
 def gamescreen_3():
