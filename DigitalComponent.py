@@ -21,9 +21,14 @@ def exit():
     pygame.quit()
     quit()
 
+def hardcoremode_toggle():
+    global hardcore_mode
+    hardcore_mode = True
+
 
 def start_screen():
-
+    global hardcore_mode
+    hardcore_mode = False
     intro = True
 
     while intro:
@@ -44,6 +49,9 @@ def start_screen():
         button('Start',150,550,300,150,bright_blue,blue,playerinput_screen)
         button('Exit', 550,550,300,150,red,bright_red,exit)
 
+
+        button('Hardcore Mode', 550,300,200,100,red,bright_red,hardcoremode_toggle)
+
         pygame.display.update()
         clock.tick(15)
 
@@ -60,6 +68,7 @@ def playerinput_screen():
     global RedPlayer
     global GreenPlayer
     global BlackPlayer
+    global hardcore_mode
 
     while not gameExit:
         fpsclock.tick(fps)
@@ -67,7 +76,6 @@ def playerinput_screen():
         for event in pygame.event.get():
             if event.type == pygame.KEYUP:
                 print(pygame.key.name(event.key))
-                print(ord(pygame.key.name(event.key)))
             if event.type == pygame.QUIT:
                 exit()
 
@@ -112,7 +120,12 @@ def playerinput_screen():
         pygame.draw.rect(gameDisplay, green, (520,500,150,40))
         print_text(TINY_FONT, 530, 505, GreenPlayer, white)
 
-        button('Proceed',350,250,300,150,bright_green,green,gamescreen_3)
+
+        if hardcore_mode == True:
+            button('Proceed',350,250,300,150,bright_green,green,gamescreen_3)
+        else:
+            button('resources', 550, 250,300,150, bright_green,green,resource_counter)
+
 
         pygame.display.update()
         clock.tick(15)
@@ -178,7 +191,6 @@ def resource_counter():
 
 
 def gamescreen_3():
-    start = True
     background()
 
     resource_counter()
@@ -193,7 +205,7 @@ def gamescreen_3():
     event_msg = random.choice(event_list)
     event_active = False
 
-    while start:
+    while hardcore_mode:
 
         # 'Hardcore Mode'
         hardcore_state = TINY_FONT.render(str(hardcore_setting), True, white)   # True / False Text
