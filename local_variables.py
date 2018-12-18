@@ -40,3 +40,29 @@ BlackPlayer = 0
 
 # Turns
 turns = 0
+
+# Player Amount Font
+PA_font = pygame.font.SysFont("arial", 36)                                                            # Default font
+PA_font_big = 36
+PA_fontSmall = pygame.font.SysFont("arial", 18)                                                       # Small Font
+PA_font_mid = 18
+PA_fontInput = pygame.font.SysFont("arial", 20)                                                       # Setup Screen Font
+PA_font_small = 8
+PA_textShadow = (30, 30, 30)
+
+# Player Amount Buttons
+player_amount_x = 20
+player_amount_y = 40
+player_amount_size = 26
+
+startPlayerBackground = pygame.Rect(player_amount_x-4, player_amount_y - 25, player_amount_size * 7, player_amount_size * 4)
+startPlayerBgBorder = pygame.Rect(startPlayerBackground.x-2, startPlayerBackground.y-2, startPlayerBackground.width+4, startPlayerBackground.height + 4)
+startPlayerShadow = pygame.Rect(player_amount_x+2, player_amount_y+4, player_amount_size * 3 + 2, player_amount_size*2)
+startPlayer2 = pygame.Rect(player_amount_x, player_amount_y, player_amount_size, player_amount_size*2)
+startPlayer3 = pygame.Rect(player_amount_x + player_amount_size+1, player_amount_y, player_amount_size, player_amount_size*2)
+startPlayer4 = pygame.Rect(player_amount_x + player_amount_size*2 + 2, player_amount_y+2, player_amount_size, player_amount_size*2)
+startPlayerContinue = pygame.Rect(player_amount_x*5.5, player_amount_y+10, player_amount_size*3 + 2, player_amount_size*1.5)
+startPlayerContinueShadow = pygame.Rect(startPlayerContinue.x+2, startPlayerContinue.y+2, player_amount_size*3 + 2, player_amount_size*1.5)
+
+player_amount_color = (130, 130, 130)
+player_amount_shadow = (30, 30, 30)
