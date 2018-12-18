@@ -37,3 +37,6 @@ PurplePlayer = 0
 RedPlayer = 0
 GreenPlayer = 0
 BlackPlayer = 0
+
+# Turns
+turns = 0

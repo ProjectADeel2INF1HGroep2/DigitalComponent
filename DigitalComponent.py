@@ -1,6 +1,6 @@
 import random
 from click_button import *
-from name_input import *
+from input import *
 from local_variables import *
 
 pygame.init()
@@ -126,6 +126,7 @@ def resource_counter():
     # TODO: Make the amount of players variable.
 
     # Defining the variables
+    global turns
     global current_player
     current_player = 1
     global player_resources
@@ -145,18 +146,14 @@ def resource_counter():
             current_player_name = BlackPlayer
 
         # Let the user input the amount of land they own
-        print('The amount of yellow land ' + str(current_player_name) + ' owns:')
-        global yellow_amount
-        yellow_amount = input()
-        print('The amount of orange land ' + str(current_player_name) + ' owns:')
-        global orange_amount
-        orange_amount = input()
-        print('The amount of blue land ' + str(current_player_name) + ' owns:')
-        global blue_amount
-        blue_amount = input()
-        print('The amount of red land ' + str(current_player_name) + ' owns:')
-        global red_amount
-        red_amount = input()
+        yellow_amount = enter_resources(2, "yellow", str(current_player_name))
+        background()
+        orange_amount = enter_resources(2, "orange", str(current_player_name))
+        background()
+        blue_amount = enter_resources(2, "blue", str(current_player_name))
+        background()
+        red_amount = enter_resources(2, "red", str(current_player_name))
+        background()
 
         # Calculates the amount of land and multiplies it with the value of the land
         yellow = int(yellow_amount) * 1
@@ -166,7 +163,8 @@ def resource_counter():
 
         # Counts up the four given values
         player_resources = player_resources + yellow + orange + blue + red
-        print(str(current_player_name) + ' gets ' + str(player_resources) + ' resources')
+        background()
+        print_text(SMALL_FONT, 125, 470, "Player " + str(current_player_name) + " gets " + str(player_resources) + " resources.", white)
 
         # Continues to the next player and puts the playerResources on zero
         current_player = current_player + 1
@@ -175,13 +173,15 @@ def resource_counter():
 
     # Resets the loop
     current_player = 1
+    turns = turns + 1
+    print(turns)
+    print_text(SMALL_FONT, 825, 675, "Turns: " + str(turns), white)
+
 
 
 def gamescreen_3():
     start = True
     background()
-
-    resource_counter()
 
     # 'Hardcore Mode'
     hardcore_setting = False
@@ -194,6 +194,8 @@ def gamescreen_3():
     event_active = False
 
     while start:
+
+        resource_counter()
 
         # 'Hardcore Mode'
         hardcore_state = TINY_FONT.render(str(hardcore_setting), True, white)   # True / False Text
