@@ -133,16 +133,16 @@ def resource_counter():
     global current_player_name
     current_player_name = 0
 
-    if current_player == 1:
-        current_player_name = BlackPlayer
-    elif current_player == 2:
-        current_player_name = RedPlayer
-    elif current_player == 3:
-        current_player_name = PurplePlayer
-    elif current_player == 4:
-        current_player_name = GreenPlayer
-
     while current_player <= 4:
+
+        if current_player == 1:
+            current_player_name = PurplePlayer
+        elif current_player == 2:
+            current_player_name = RedPlayer
+        elif current_player == 3:
+            current_player_name = GreenPlayer
+        elif current_player == 4:
+            current_player_name = BlackPlayer
 
         # Let the user input the amount of land they own
         print('The amount of yellow land ' + str(current_player_name) + ' owns:')
