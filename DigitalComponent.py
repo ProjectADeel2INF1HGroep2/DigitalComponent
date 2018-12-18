@@ -120,10 +120,8 @@ def playerinput_screen():
 
 def resource_counter():
 
-    # TODO: Build a while loop which keeps going if the game is active.
-    # TODO: Add a turn counter in the game loop.
     # TODO: Store the values per player so they can be remembered and used again.
-    # TODO: Make the amount of players variable.
+    # TODO: Add + & - buttons for adding and subtracting resources (instead of typing).
 
     # Defining the variables
     global turns
@@ -168,7 +166,7 @@ def resource_counter():
         # Counts up the four given values
         player_resources = player_resources + yellow + orange + blue + red
         background()
-        print_text(SMALL_FONT, 125, 470, "Player " + str(current_player_name) + " gets " + str(player_resources) + " resources.", white)
+        print_text(SMALL_FONT, 250, 470, "Player " + str(current_player_name) + " gets " + str(player_resources) + " resources.", white)
 
         # Continues to the next player and puts the playerResources on zero
         current_player = current_player + 1
@@ -179,7 +177,7 @@ def resource_counter():
     current_player = 1
     turns = turns + 1
     print_text(SMALL_FONT, 825, 675, "Turns: " + str(turns), white)
-    
+
 
 def gamescreen_3():
     start = True
