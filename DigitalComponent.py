@@ -133,6 +133,10 @@ def resource_counter():
     player_resources = 0
     global current_player_name
     current_player_name = 0
+    global yellow_amount
+    global orange_amount
+    global blue_amount
+    global red_amount
 
     while current_player <= 4:
 
@@ -174,10 +178,8 @@ def resource_counter():
     # Resets the loop
     current_player = 1
     turns = turns + 1
-    print(turns)
     print_text(SMALL_FONT, 825, 675, "Turns: " + str(turns), white)
-
-
+    
 
 def gamescreen_3():
     start = True
