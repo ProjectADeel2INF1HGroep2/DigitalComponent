@@ -248,7 +248,6 @@ def next_player():
     global player_amount_num
     global turns
 
-
     if current_player == player_amount_num:
         current_player = 1
         pygame.display.update()
@@ -326,7 +325,6 @@ def gamescreen_3():
     bR_resources = 0
 
 
-
     while start:
         #global turns
         pygame.draw.rect(gameDisplay, green, next_p_rect)
@@ -337,12 +335,12 @@ def gamescreen_3():
 
 
         if current_player == 1 and turns > 0:
-            text_write("Purple Player gets " + str(pGet) + " resources", PA_font_mid, 400, 200)
-            text_write("Red Player gets " + str(rGet) + " resources", PA_font_mid, 400, 250)
+            text_write(str(PurplePlayer)+" gets " + str(pGet) + " resources", PA_font_mid, 400, 200)
+            text_write(str(RedPlayer)+ " gets " + str(rGet) + " resources", PA_font_mid, 400, 250)
             if player_amount_num >= 3:
-                text_write("Green gets " + str(gGet) + " resources", PA_font_mid, 400, 300)
+                text_write(str(GreenPlayer)+ " gets " + str(gGet) + " resources", PA_font_mid, 400, 300)
                 if player_amount_num == 4:
-                    text_write("Black gets " + str(bGet) + " resources", PA_font_mid, 400, 350)
+                    text_write(str(BlackPlayer)+" gets " + str(bGet) + " resources", PA_font_mid, 400, 350)
 
         # resource_counter()  <- commented while working on resource + and - buttons
 
@@ -353,12 +351,12 @@ def gamescreen_3():
         yellow_H = 140   #
         yellow_Gap = 24  #
 
-        text_write("Purple Player Resources: " + str(total_resource_list[0]), PA_font_mid, player_amount_x, yellow_H/4)           # Player resource text, left side
-        text_write("Red Player Resources: " + str(total_resource_list[1]), PA_font_mid, player_amount_x, yellow_H/2)              #
+        text_write(str(PurplePlayer)+"'s Resources: " + str(total_resource_list[0]), PA_font_mid, player_amount_x, yellow_H/4)           # Player resource text, left side
+        text_write(str(RedPlayer)+"'s Resources: " + str(total_resource_list[1]), PA_font_mid, player_amount_x, yellow_H/2)              #
         if player_amount_num >= 3:                                                                                                #
-            text_write("Green Player Resources: " + str(total_resource_list[2]), PA_font_mid, player_amount_x, yellow_H*0.75)     #
+            text_write(str(GreenPlayer)+"'s Resources: " + str(total_resource_list[2]), PA_font_mid, player_amount_x, yellow_H*0.75)     #
             if player_amount_num == 4:                                                                                            #
-                text_write("Black Player Resources: " + str(total_resource_list[3]), PA_font_mid, player_amount_x, yellow_H)      #
+                text_write(str(BlackPlayer)+"'s Resources: " + str(total_resource_list[3]), PA_font_mid, player_amount_x, yellow_H)      #
 
         yellowRect = pygame.Rect(yellow_X, yellow_Y, yellow_W, yellow_H/2 + ((yellow_H/4)*(player_amount_num-2)))                         # Colored rects for + and - buttons
         orangeRect = pygame.Rect(yellow_X+yellow_W+yellow_Gap, yellow_Y, yellow_W, yellow_H/2 + ((yellow_H/4)*(player_amount_num-2)))     #
@@ -530,7 +528,7 @@ def gamescreen_3():
                     background()
                     # Reset
 
-                elif next_p_rect.collidepoint(event.pos):
+                elif next_p_rect.collidepoint(event.pos) and not event_active:
                     next_player()
 
                 # Plus / Minus buttons
