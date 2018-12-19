@@ -63,7 +63,8 @@ def playerinput_screen():
     global GreenPlayer
     global BlackPlayer
 
-    while not gameExit:
+    input_active = True
+    while not gameExit and input_active:
         fpsclock.tick(fps)
         pressed = None
         background()
@@ -240,9 +241,12 @@ def resource_counter():
 
 
 def gamescreen_3():
+    global input_active
+    input_active = False
     start = True
     background()
 
+    #'''
     # 'Hardcore Mode'
     hardcore_setting = False
     hardcore_color = red
@@ -252,29 +256,169 @@ def gamescreen_3():
                   'You lose 1 troop', 'You lose 3 troops', 'You lose 5 troops']
     event_msg = random.choice(event_list)
     event_active = False
+    #'''
+
+    pY_resources = 0
+    pO_resources = 0
+    pB_resources = 0
+    pR_resources = 0
+
+    rY_resources = 0
+    rO_resources = 0
+    rB_resources = 0
+    rR_resources = 0
+
+    gY_resources = 0
+    gO_resources = 0
+    gB_resources = 0
+    gR_resources = 0
+
+    bY_resources = 0
+    bO_resources = 0
+    bB_resources = 0
+    bR_resources = 0
 
     while start:
 
-        resource_counter()
+        # resource_counter()  <- commented while working on resource + and - buttons
 
         # Resource Menu
-        text_write("Purple Player Resources: " + str(total_resource_list[0]), PA_font_mid, player_amount_x, player_amount_y - 20)
-        text_write("Red Player Resources: " + str(total_resource_list[1]), PA_font_mid, player_amount_x, player_amount_y + 10)
-        if player_amount_num >= 3:
-            text_write("Green Player Resources: " + str(total_resource_list[2]), PA_font_mid, player_amount_x, player_amount_y + 40)
-            if player_amount_num == 4:
-                text_write("Black Player Resources: " + str(total_resource_list[3]), PA_font_mid, player_amount_x, player_amount_y + 70)
+        yellow_X = 320   # Most of the stuff in the resource menu scales off of these
+        yellow_Y = 20    #
+        yellow_W = 80    #
+        yellow_H = 140   #
+        yellow_Gap = 24  #
+
+        text_write("Purple Player Resources: " + str(total_resource_list[0]), PA_font_mid, player_amount_x, yellow_H/4)           # Player resource text, left side
+        text_write("Red Player Resources: " + str(total_resource_list[1]), PA_font_mid, player_amount_x, yellow_H/2)              #
+        if player_amount_num >= 3:                                                                                                #
+            text_write("Green Player Resources: " + str(total_resource_list[2]), PA_font_mid, player_amount_x, yellow_H*0.75)     #
+            if player_amount_num == 4:                                                                                            #
+                text_write("Black Player Resources: " + str(total_resource_list[3]), PA_font_mid, player_amount_x, yellow_H)      #
+
+        yellowRect = pygame.Rect(yellow_X, yellow_Y, yellow_W, yellow_H/2 + ((yellow_H/4)*(player_amount_num-2)))                         # Colored rects for + and - buttons
+        orangeRect = pygame.Rect(yellow_X+yellow_W+yellow_Gap, yellow_Y, yellow_W, yellow_H/2 + ((yellow_H/4)*(player_amount_num-2)))     #
+        blueRect = pygame.Rect(orangeRect.x+yellow_W+yellow_Gap, yellow_Y, yellow_W, yellow_H/2 + ((yellow_H/4)*(player_amount_num-2)))   #
+        redRect = pygame.Rect(blueRect.x+yellow_W+yellow_Gap, yellow_Y, yellow_W, yellow_H/2 + ((yellow_H/4)*(player_amount_num-2)))      #
+
+        alpha_bgSurf = pygame.Surface((yellow_W*8.5+20, yellow_H/2 + (player_amount_num-2)*(yellow_H/4)), pygame.SRCALPHA, 32)    # Creates surface with alpha channel / transparency
+        alpha_bgSurf.fill((100, 100, 100, 1))                                                                                     # Fill the surface
+        gameDisplay.blit(alpha_bgSurf, (yellow_Y/2, yellow_Y))                                                                    # Blit the surface
+
+        pygame.draw.rect(gameDisplay, (255, 255, 0), yellowRect)    # Draw colored rects for + and - buttons
+        pygame.draw.rect(gameDisplay, (255, 128, 0), orangeRect)    #
+        pygame.draw.rect(gameDisplay, (0, 0, 255), blueRect)        #
+        pygame.draw.rect(gameDisplay, (255, 0, 0), redRect)         #
+
+        pygame.draw.line(gameDisplay, black, (10, yellow_Y), (yellow_W*8.5+29, yellow_Y), 2)                                       # Draw horizontal lines
+        pygame.draw.line(gameDisplay, black, (10, yellow_Y+(yellow_H/4)), (yellow_W*8.5+29, yellow_Y+(yellow_H/4)), 2)             #
+        pygame.draw.line(gameDisplay, black, (10, yellow_Y+(yellow_H/2)), (yellow_W*8.5+29, yellow_Y+(yellow_H/2)), 2)             #
+        if player_amount_num >= 3:                                                                                                 #
+            pygame.draw.line(gameDisplay, black, (10, yellow_Y+(yellow_H*0.75)), (yellow_W*8.5+29, yellow_Y+(yellow_H*0.75)), 2)   #
+            if player_amount_num == 4:                                                                                             #
+                pygame.draw.line(gameDisplay, black, (10, yellow_Y+yellow_H), (yellow_W*8.5+29, yellow_Y+yellow_H), 2)             #
+
+        pygame.draw.line(gameDisplay, black, (yellow_X, yellow_Y), (yellow_X, yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))                              # Yellow vertical lines
+        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2, yellow_Y), (yellow_X+yellow_W/2, yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))        #
+        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*2, yellow_Y), (yellow_X+yellow_W/2*2, yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    #
+
+        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*2 + yellow_Gap, yellow_Y), (yellow_X+yellow_W/2*2 + yellow_Gap, yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    # Orange vertical lines
+        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*3 + yellow_Gap, yellow_Y), (yellow_X+yellow_W/2*3 + yellow_Gap, yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    #
+        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*4 + yellow_Gap, yellow_Y), (yellow_X+yellow_W/2*4 + yellow_Gap, yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    #
+
+        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*4 + (yellow_Gap*2), yellow_Y), (yellow_X+yellow_W/2*4 + (yellow_Gap*2), yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    # Blue vertical lines
+        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*5 + (yellow_Gap*2), yellow_Y), (yellow_X+yellow_W/2*5 + (yellow_Gap*2), yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    #
+        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*6 + (yellow_Gap*2), yellow_Y), (yellow_X+yellow_W/2*6 + (yellow_Gap*2), yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    #
+
+        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*6 + (yellow_Gap*3), yellow_Y), (yellow_X+yellow_W/2*6 + (yellow_Gap*3), yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    # Black vertical lines
+        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*7 + (yellow_Gap*3), yellow_Y), (yellow_X+yellow_W/2*7 + (yellow_Gap*3), yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    #
+        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*8 + (yellow_Gap*3), yellow_Y), (yellow_X+yellow_W/2*8 + (yellow_Gap*3), yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    #
+
+        # Draw pluses
+        for plusRepeat in range(4):
+            for plus in range(player_amount_num):
+                pygame.draw.line(gameDisplay, green,
+                                 (yellow_X+yellow_W/8+(yellow_W*plusRepeat)+(yellow_Gap*plusRepeat), yellow_Y+yellow_H/8+(yellow_H/8*(plus*2))),
+                                 (yellow_X+yellow_W/8+yellow_W*0.25+(yellow_W*plusRepeat)+(yellow_Gap*plusRepeat), yellow_Y+yellow_H/8+(yellow_H/8*(plus*2))), 2)
+                pygame.draw.line(gameDisplay, green,
+                                 (yellow_X+yellow_W/4+(yellow_W*plusRepeat)+(yellow_Gap*plusRepeat), yellow_Y+(yellow_H/16+((yellow_H/8)*(plus*2)))),
+                                 (yellow_X+yellow_W/4+(yellow_W*plusRepeat)+(yellow_Gap*plusRepeat), yellow_Y+(yellow_H/16*3+((yellow_H/8)*(plus*2)))), 2)
+
+        # Draw minuses
+        for minRepeat in range(4):
+            for minus in range(player_amount_num):
+                pygame.draw.line(gameDisplay, red,
+                                 (yellow_X+yellow_W/2+(yellow_W/8)+(yellow_W*minRepeat)+(yellow_Gap*minRepeat), yellow_Y+yellow_H/8+(yellow_H/8*(minus*2))),
+                                 (yellow_X+yellow_W/2+(yellow_W/8*3)+(yellow_W*minRepeat)+(yellow_Gap*minRepeat), yellow_Y+yellow_H/8+(yellow_H/8*(minus*2))), 2)
+
+        # Plus / Minus List
+        plus_minus_list = [[[], [], [], [], [], [], [], []],
+                           [[], [], [], [], [], [], [], []],
+                           [[], [], [], [], [], [], [], []],
+                           [[], [], [], [], [], [], [], []]]
+
+        # Fill in the plus_minus_list in a real inefficient way but meh it's late
+        for PMRow in range(4):
+            for PMColumn in range(8):
+                if PMColumn < 2 and PMRow == 0:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn), (yellow_Y)+((yellow_W/2)*PMRow)+2])
+                elif 2 <= PMColumn < 4 and PMRow == 0:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap + 2), yellow_Y+((yellow_W/2)*PMRow)+2])
+                elif 4 <= PMColumn < 6 and PMRow == 0:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*2 + 2), yellow_Y+((yellow_W/2)*PMRow)+2])
+                elif PMColumn > 5 and PMRow == 0:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*3 + 2), yellow_Y+((yellow_W/2)*PMRow)+2])
+
+                elif PMColumn < 2 and PMRow == 1:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn), (yellow_Y)+((yellow_W/2)*PMRow)-2])
+                elif 2 <= PMColumn < 4 and PMRow == 1:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap + 2), yellow_Y+((yellow_W/2)*PMRow)-2])
+                elif 4 <= PMColumn < 6 and PMRow == 1:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*2 + 2), yellow_Y+((yellow_W/2)*PMRow)-2])
+                elif PMColumn > 5 and PMRow == 1:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*3 + 2), yellow_Y+((yellow_W/2)*PMRow)-2])
+
+                elif PMColumn < 2 and PMRow == 2:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn), (yellow_Y)+((yellow_W/2)*PMRow)-8])
+                elif 2 <= PMColumn < 4 and PMRow == 2:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap + 2), yellow_Y+((yellow_W/2)*PMRow)-8])
+                elif 4 <= PMColumn < 6 and PMRow == 2:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*2 + 2), yellow_Y+((yellow_W/2)*PMRow)-8])
+                elif PMColumn > 5 and PMRow == 2:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*3 + 2), yellow_Y+((yellow_W/2)*PMRow)-8])
+
+                elif PMColumn < 2 and PMRow == 3:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn), (yellow_Y)+((yellow_W/2)*PMRow)-12])
+                elif 2 <= PMColumn < 4 and PMRow == 3:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap + 2), yellow_Y+((yellow_W/2)*PMRow)-12])
+                elif 4 <= PMColumn < 6 and PMRow == 3:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*2 + 2), yellow_Y+((yellow_W/2)*PMRow)-12])
+                elif PMColumn > 5 and PMRow == 3:
+                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*3 + 2), yellow_Y+((yellow_W/2)*PMRow)-12])
 
 
-        yellowRect = pygame.Rect(320, 20, 80, 120)
-        orangeRect = pygame.Rect(yellowRect.x + yellowRect.width*1.1, yellowRect.y, yellowRect.width, yellowRect.height)
-        blueRect = pygame.Rect(yellowRect.x + yellowRect.width*2.2, yellowRect.y, yellowRect.width, yellowRect.height)
-        redRect = pygame.Rect(yellowRect.x + yellowRect.width*3.3, yellowRect.y, yellowRect.width, yellowRect.height)
+                #'''
 
-        pygame.draw.rect(gameDisplay, (255, 255, 0), yellowRect)
-        pygame.draw.rect(gameDisplay, (255, 128, 0), orangeRect)
-        pygame.draw.rect(gameDisplay, (0, 0, 255), blueRect)
-        pygame.draw.rect(gameDisplay, (255, 0, 0), redRect)
+        # Resource counters for each color
+        text_write(str(pY_resources), PA_font_mid, yellow_X - 22, yellow_H/4)
+        text_write(str(rY_resources), PA_font_mid, yellow_X - 22, yellow_H/2)
+        text_write(str(gY_resources), PA_font_mid, yellow_X - 22, yellow_H*0.75)
+        text_write(str(bY_resources), PA_font_mid, yellow_X - 22, yellow_H)
+
+        text_write(str(pO_resources), PA_font_mid, yellow_X + (yellow_W*1) + yellow_Gap - 22, yellow_H/4)
+        text_write(str(rO_resources), PA_font_mid, yellow_X + (yellow_W*1) + yellow_Gap - 22, yellow_H/2)
+        text_write(str(gO_resources), PA_font_mid, yellow_X + (yellow_W*1) + yellow_Gap - 22, yellow_H*0.75)
+        text_write(str(bO_resources), PA_font_mid, yellow_X + (yellow_W*1) + yellow_Gap - 22, yellow_H)
+
+        text_write(str(pB_resources), PA_font_mid, yellow_X + (yellow_W*2) + (yellow_Gap*2) - 22, yellow_H/4)
+        text_write(str(rB_resources), PA_font_mid, yellow_X + (yellow_W*2) + (yellow_Gap*2) - 22, yellow_H/2)
+        text_write(str(gB_resources), PA_font_mid, yellow_X + (yellow_W*2) + (yellow_Gap*2) - 22, yellow_H*0.75)
+        text_write(str(bB_resources), PA_font_mid, yellow_X + (yellow_W*2) + (yellow_Gap*2) - 22, yellow_H)
+
+        text_write(str(pR_resources), PA_font_mid, yellow_X + (yellow_W*3) + (yellow_Gap*3) - 22, yellow_H/4)
+        text_write(str(rR_resources), PA_font_mid, yellow_X + (yellow_W*3) + (yellow_Gap*3) - 22, yellow_H/2)
+        text_write(str(gR_resources), PA_font_mid, yellow_X + (yellow_W*3) + (yellow_Gap*3) - 22, yellow_H*0.75)
+        text_write(str(bR_resources), PA_font_mid, yellow_X + (yellow_W*3) + (yellow_Gap*3) - 22, yellow_H)
 
 
         # 'Hardcore Mode'
@@ -287,10 +431,11 @@ def gamescreen_3():
             #print(event)
             if event.type == pygame.QUIT:
                 exit()
-
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+                print(plus_minus_list)
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 # 'Hardcore Mode'
-                '''
+
                 if hardcore_button.collidepoint(event.pos):     # If hardcore button is clicked
                     background()                    # Refill background to white before redrawing
                     hardcore_setting = not hardcore_setting     # Toggle hardcore_setting between True / False
@@ -299,7 +444,7 @@ def gamescreen_3():
                     else:                                       # Else
                         hardcore_color = red                    # Red
             
-                elif event_button.collidepoint(event.pos) and not event_active:                 # If event button is clicked and an event is not already open
+                elif event_button.collidepoint(event.pos) and not event_active and hardcore_setting:                 # If event button is clicked and an event is not already open
                     event_active = True                                                         # Set event active to true
                     background()                                                  			   # Refill background before redrawing
                     event_msg = random.choice(event_list)                                       # Get a random event from event list
@@ -313,8 +458,143 @@ def gamescreen_3():
 
                 elif event_close.collidepoint(event.pos):                                       # If event closing button is clicked
                     event_active = False                                                        # Set event active to false
-                    background()                    			                                # Reset board
-                '''
+                    background()
+                    # Reset board
+
+                # Really messy plus minus button click thing
+
+                # First Row
+                elif plus_minus_list[0][0][0][1] <= event.pos[1] < plus_minus_list[1][0][0][1]:
+                    # Yellow
+                    if plus_minus_list[0][0][0][0] <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)):
+                        pY_resources += 1
+                        background()
+                    elif plus_minus_list[0][0][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)*2):
+                        pY_resources -= 1
+                        background()
+                    # Orange
+                    elif plus_minus_list[0][2][0][0] <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)):
+                        pO_resources += 1
+                        background()
+                    elif plus_minus_list[0][2][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)*2):
+                        pO_resources -= 1
+                        background()
+                    # Blue
+                    elif plus_minus_list[0][4][0][0] <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)):
+                        pB_resources += 1
+                        background()
+                    elif plus_minus_list[0][4][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)*2):
+                        pB_resources -= 1
+                        background()
+                    # Red
+                    elif plus_minus_list[0][6][0][0] <= event.pos[0] < (plus_minus_list[0][6][0][0] + (yellow_W / 2)):
+                        pR_resources += 1
+                        background()
+                    elif plus_minus_list[0][6][0][0] + (yellow_W / 2) <= event.pos[0] < (
+                            plus_minus_list[0][6][0][0] + (yellow_W / 2) * 2):
+                        pR_resources -= 1
+                        background()
+
+                # Second Row
+                elif plus_minus_list[1][0][0][1] <= event.pos[1] < plus_minus_list[2][0][0][1]:
+                    # Yellow
+                    if plus_minus_list[0][0][0][0] <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)):
+                        rY_resources += 1
+                        background()
+                    elif plus_minus_list[0][0][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)*2):
+                        rY_resources -= 1
+                        background()
+                    # Orange
+                    elif plus_minus_list[0][2][0][0] <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)):
+                        rO_resources += 1
+                        background()
+                    elif plus_minus_list[0][2][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)*2):
+                        rO_resources -= 1
+                        background()
+                    # Blue
+                    elif plus_minus_list[0][4][0][0] <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)):
+                        rB_resources += 1
+                        background()
+                    elif plus_minus_list[0][4][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)*2):
+                        rB_resources -= 1
+                        background()
+                    # Red
+                    elif plus_minus_list[0][6][0][0] <= event.pos[0] < (plus_minus_list[0][6][0][0] + (yellow_W / 2)):
+                        rR_resources += 1
+                        background()
+                    elif plus_minus_list[0][6][0][0] + (yellow_W / 2) <= event.pos[0] < (
+                            plus_minus_list[0][6][0][0] + (yellow_W / 2) * 2):
+                        rR_resources -= 1
+                        background()
+
+                # Third Row
+                elif plus_minus_list[2][0][0][1] <= event.pos[1] < plus_minus_list[3][0][0][1]:
+                    # Yellow
+                    if plus_minus_list[0][0][0][0] <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)):
+                        gY_resources += 1
+                        background()
+                    elif plus_minus_list[0][0][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)*2):
+                        gY_resources -= 1
+                        background()
+                    # Orange
+                    elif plus_minus_list[0][2][0][0] <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)):
+                        gO_resources += 1
+                        background()
+                    elif plus_minus_list[0][2][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)*2):
+                        gO_resources -= 1
+                        background()
+                    # Blue
+                    elif plus_minus_list[0][4][0][0] <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)):
+                        gB_resources += 1
+                        background()
+                    elif plus_minus_list[0][4][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)*2):
+                        gB_resources -= 1
+                        background()
+                    # Red
+                    elif plus_minus_list[0][6][0][0] <= event.pos[0] < (plus_minus_list[0][6][0][0] + (yellow_W / 2)):
+                        gR_resources += 1
+                        background()
+                    elif plus_minus_list[0][6][0][0] + (yellow_W / 2) <= event.pos[0] < (
+                            plus_minus_list[0][6][0][0] + (yellow_W / 2) * 2):
+                        gR_resources -= 1
+                        background()
+
+                # Fourth Row
+                elif plus_minus_list[3][0][0][1] <= event.pos[1] < plus_minus_list[3][0][0][1]+(yellow_W/2):
+                    # Yellow
+                    if plus_minus_list[0][0][0][0] <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)):
+                        bY_resources += 1
+                        background()
+                    elif plus_minus_list[0][0][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)*2):
+                        bY_resources -= 1
+                        background()
+                    # Orange
+                    elif plus_minus_list[0][2][0][0] <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)):
+                        bO_resources += 1
+                        background()
+                    elif plus_minus_list[0][2][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)*2):
+                        bO_resources -= 1
+                        background()
+                    # Blue
+                    elif plus_minus_list[0][4][0][0] <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)):
+                        bB_resources += 1
+                        background()
+                    elif plus_minus_list[0][4][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)*2):
+                        bB_resources -= 1
+                        background()
+                    # Red
+                    elif plus_minus_list[0][6][0][0] <= event.pos[0] < (plus_minus_list[0][6][0][0] + (yellow_W / 2)):
+                        bR_resources += 1
+                        background()
+                    elif plus_minus_list[0][6][0][0] + (yellow_W / 2) <= event.pos[0] < (plus_minus_list[0][6][0][0] + (yellow_W / 2) * 2):
+                        bR_resources -= 1
+                        background()
+
+                print(event.pos)
+                # print(plus_minus_list[0][0][0]) [320.0, 22.0]
+                # print(plus_minus_list[2][0][0]) #[360.0, 22.0]
+
+
         # 'Hardcore Mode'
         hardcore_button = pygame.Rect(890, 30, 60, 30)                                         # The "button" rect
         hardcore_bg = pygame.Rect(hardcore_button.x - 160, hardcore_button.y - 5,              # Background rect, scaled to button rect
@@ -336,9 +616,9 @@ def gamescreen_3():
         if hardcore_setting:                                                                   # If hardcore is set to True
             pygame.draw.rect(gameDisplay, (50, 130, 130), event_button)                        # Draw event button
             gameDisplay.blit(event_button_txt, (event_button.x + 10, event_button.y + 5))      # Blit event button text
-
+        #'''
         pygame.display.update()
-        clock.tick(15)
+        clock.tick(60)
 
 
 start_screen()
