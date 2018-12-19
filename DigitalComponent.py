@@ -246,19 +246,29 @@ def resource_counter():
 def next_player():
     global current_player
     global player_amount_num
+    global turns
+
 
     if current_player == player_amount_num:
         current_player = 1
-        # text_write("Purple gets " + str(pGet) + " resources", PA_font_mid, 400, 400)
         pygame.display.update()
-        # print(pGet)
+
+        pGet = ((pY_resources * 1) + (pO_resources * 2) + (pB_resources * 3) + (pR_resources * 4))
+        rGet = ((rY_resources * 1) + (rO_resources * 2) + (rB_resources * 3) + (rR_resources * 4))
+        gGet = ((gY_resources * 1) + (gO_resources * 2) + (gB_resources * 3) + (gR_resources * 4))
+        bGet = ((bY_resources * 1) + (bO_resources * 2) + (bB_resources * 3) + (bR_resources * 4))
+
+        total_resource_list[0] += pGet
+        total_resource_list[1] += rGet
+        total_resource_list[2] += gGet
+        total_resource_list[3] += bGet
+
+        turns = turns + 1
 
     else:
         current_player = current_player + 1
 
     background()
-    print("Current player: "+str(current_player))
-
 
 def gamescreen_3():
 
@@ -318,22 +328,21 @@ def gamescreen_3():
 
 
     while start:
-
+        #global turns
         pygame.draw.rect(gameDisplay, green, next_p_rect)
 
         text_write("Current Player: " + str(player_list[current_player-1]), PA_font_mid, 760, 150)
         text_write("Next Player", PA_font_mid, 792, 190)
+        text_write("Round: " + str(turns), PA_font_big, 20, 700)
 
 
-        if current_player == player_amount_num:
+        if current_player == 1 and turns > 0:
             text_write("Purple Player gets " + str(pGet) + " resources", PA_font_mid, 400, 200)
             text_write("Red Player gets " + str(rGet) + " resources", PA_font_mid, 400, 250)
             if player_amount_num >= 3:
                 text_write("Green gets " + str(gGet) + " resources", PA_font_mid, 400, 300)
                 if player_amount_num == 4:
                     text_write("Black gets " + str(bGet) + " resources", PA_font_mid, 400, 350)
-
-            #print("ohsheet")
 
         # resource_counter()  <- commented while working on resource + and - buttons
 
@@ -488,8 +497,6 @@ def gamescreen_3():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-                print(plus_minus_list)
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 # 'Hardcore Mode'
 
@@ -526,7 +533,7 @@ def gamescreen_3():
                 elif next_p_rect.collidepoint(event.pos):
                     next_player()
 
-                # Really messy plus minus button click thing
+                # Plus / Minus buttons
 
                 # First Row
                 elif plus_minus_list[0][0][0][1] <= event.pos[1] < plus_minus_list[1][0][0][1]:
@@ -535,30 +542,34 @@ def gamescreen_3():
                         pY_resources += 1
                         background()
                     elif plus_minus_list[0][0][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)*2):
-                        pY_resources -= 1
-                        background()
+                        if pY_resources > 0:
+                            pY_resources -= 1
+                            background()
                     # Orange
                     elif plus_minus_list[0][2][0][0] <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)):
                         pO_resources += 1
                         background()
                     elif plus_minus_list[0][2][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)*2):
-                        pO_resources -= 1
-                        background()
+                        if pO_resources > 0:
+                            pO_resources -= 1
+                            background()
                     # Blue
                     elif plus_minus_list[0][4][0][0] <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)):
                         pB_resources += 1
                         background()
                     elif plus_minus_list[0][4][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)*2):
-                        pB_resources -= 1
-                        background()
+                        if pB_resources > 0:
+                            pB_resources -= 1
+                            background()
                     # Red
                     elif plus_minus_list[0][6][0][0] <= event.pos[0] < (plus_minus_list[0][6][0][0] + (yellow_W / 2)):
                         pR_resources += 1
                         background()
                     elif plus_minus_list[0][6][0][0] + (yellow_W / 2) <= event.pos[0] < (
                             plus_minus_list[0][6][0][0] + (yellow_W / 2) * 2):
-                        pR_resources -= 1
-                        background()
+                        if pR_resources > 0:
+                            pR_resources -= 1
+                            background()
 
                 # Second Row
                 elif plus_minus_list[1][0][0][1] <= event.pos[1] < plus_minus_list[2][0][0][1]:
@@ -567,30 +578,34 @@ def gamescreen_3():
                         rY_resources += 1
                         background()
                     elif plus_minus_list[0][0][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)*2):
-                        rY_resources -= 1
-                        background()
+                        if rY_resources > 0:
+                            rY_resources -= 1
+                            background()
                     # Orange
                     elif plus_minus_list[0][2][0][0] <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)):
                         rO_resources += 1
                         background()
                     elif plus_minus_list[0][2][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)*2):
-                        rO_resources -= 1
-                        background()
+                        if rO_resources > 0:
+                            rO_resources -= 1
+                            background()
                     # Blue
                     elif plus_minus_list[0][4][0][0] <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)):
                         rB_resources += 1
                         background()
                     elif plus_minus_list[0][4][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)*2):
-                        rB_resources -= 1
-                        background()
+                        if rB_resources > 0:
+                            rB_resources -= 1
+                            background()
                     # Red
                     elif plus_minus_list[0][6][0][0] <= event.pos[0] < (plus_minus_list[0][6][0][0] + (yellow_W / 2)):
                         rR_resources += 1
                         background()
                     elif plus_minus_list[0][6][0][0] + (yellow_W / 2) <= event.pos[0] < (
                             plus_minus_list[0][6][0][0] + (yellow_W / 2) * 2):
-                        rR_resources -= 1
-                        background()
+                        if rR_resources > 0:
+                            rR_resources -= 1
+                            background()
 
                 # Third Row
                 elif plus_minus_list[2][0][0][1] <= event.pos[1] < plus_minus_list[3][0][0][1]:
@@ -599,30 +614,34 @@ def gamescreen_3():
                         gY_resources += 1
                         background()
                     elif plus_minus_list[0][0][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)*2):
-                        gY_resources -= 1
-                        background()
+                        if gY_resources > 0:
+                            gY_resources -= 1
+                            background()
                     # Orange
                     elif plus_minus_list[0][2][0][0] <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)):
                         gO_resources += 1
                         background()
                     elif plus_minus_list[0][2][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)*2):
-                        gO_resources -= 1
-                        background()
+                        if gO_resources > 0:
+                            gO_resources -= 1
+                            background()
                     # Blue
                     elif plus_minus_list[0][4][0][0] <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)):
                         gB_resources += 1
                         background()
                     elif plus_minus_list[0][4][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)*2):
-                        gB_resources -= 1
-                        background()
+                        if gB_resources > 0:
+                            gB_resources -= 1
+                            background()
                     # Red
                     elif plus_minus_list[0][6][0][0] <= event.pos[0] < (plus_minus_list[0][6][0][0] + (yellow_W / 2)):
                         gR_resources += 1
                         background()
                     elif plus_minus_list[0][6][0][0] + (yellow_W / 2) <= event.pos[0] < (
                             plus_minus_list[0][6][0][0] + (yellow_W / 2) * 2):
-                        gR_resources -= 1
-                        background()
+                        if gR_resources > 0:
+                            gR_resources -= 1
+                            background()
 
                 # Fourth Row
                 elif plus_minus_list[3][0][0][1] <= event.pos[1] < plus_minus_list[3][0][0][1]+(yellow_W/2):
@@ -631,29 +650,33 @@ def gamescreen_3():
                         bY_resources += 1
                         background()
                     elif plus_minus_list[0][0][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)*2):
-                        bY_resources -= 1
-                        background()
+                        if bY_resources > 0:
+                            bY_resources -= 1
+                            background()
                     # Orange
                     elif plus_minus_list[0][2][0][0] <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)):
                         bO_resources += 1
                         background()
                     elif plus_minus_list[0][2][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)*2):
-                        bO_resources -= 1
-                        background()
+                        if bO_resources > 0:
+                            bO_resources -= 1
+                            background()
                     # Blue
                     elif plus_minus_list[0][4][0][0] <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)):
                         bB_resources += 1
                         background()
                     elif plus_minus_list[0][4][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)*2):
-                        bB_resources -= 1
-                        background()
+                        if bB_resources > 0:
+                            bB_resources -= 1
+                            background()
                     # Red
                     elif plus_minus_list[0][6][0][0] <= event.pos[0] < (plus_minus_list[0][6][0][0] + (yellow_W / 2)):
                         bR_resources += 1
                         background()
                     elif plus_minus_list[0][6][0][0] + (yellow_W / 2) <= event.pos[0] < (plus_minus_list[0][6][0][0] + (yellow_W / 2) * 2):
-                        bR_resources -= 1
-                        background()
+                        if bR_resources > 0:
+                            bR_resources -= 1
+                            background()
 
 
         # 'Hardcore Mode'
