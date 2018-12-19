@@ -66,3 +66,5 @@ startPlayerContinueShadow = pygame.Rect(startPlayerContinue.x+2, startPlayerCont
 
 player_amount_color = (130, 130, 130)
 player_amount_shadow = (30, 30, 30)
+
+next_p_rect = pygame.Rect(790, 180, 100, 40)

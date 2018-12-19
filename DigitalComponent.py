@@ -7,6 +7,9 @@ from player_amount import *
 pygame.init()
 # Total resources for each player
 total_resource_list = [0, 0, 0, 0]
+player_list = ["Purple", "Red", "Green", "Black"]
+current_player = 1
+
 def background():
     gamemap = pygame.image.load(os.path.join(image_path, 'map-blur.jpg'))
     gamemap = pygame.transform.scale(gamemap,(display_width,display_height))
@@ -205,6 +208,7 @@ def resource_counter():
                 if current_player == 4:
                     current_player_name = BlackPlayer
 
+        '''
         # Let the user input the amount of land they own
         yellow_amount = enter_resources(2, "yellow", str(current_player_name))
         background()
@@ -214,13 +218,13 @@ def resource_counter():
         background()
         red_amount = enter_resources(2, "red", str(current_player_name))
         background()
-
+        
         # Calculates the amount of land and multiplies it with the value of the land
         yellow = int(yellow_amount) * 1
         orange = int(orange_amount) * 2
         blue = int(blue_amount) * 3
         red = int(red_amount) * 4
-
+        
         # Counts up the four given values
         player_resources = player_resources + yellow + orange + blue + red
         total_resource_list[current_player-1] += player_resources  # add player resources to the corresponding player in total_resource_list
@@ -231,16 +235,40 @@ def resource_counter():
         current_player = current_player + 1
 
         player_resources = 0
+        '''
 
     # Resets the loop
-    current_player = 1
     turns = turns + 1
     print(turns)
     print_text(SMALL_FONT, 825, 675, "Turns: " + str(turns), white)
 
 
 
+    #print("Purple gets: "+str(pGet))
+    #print("Red gets: "+str(rGet))
+    #print("Green gets: "+str(gGet))
+    #print("Black gets: "+str(bGet))
+
+
+def next_player():
+    global current_player
+    global player_amount_num
+
+    if current_player == player_amount_num:
+        current_player = 1
+        # text_write("Purple gets " + str(pGet) + " resources", PA_font_mid, 400, 400)
+        pygame.display.update()
+        # print(pGet)
+
+    else:
+        current_player = current_player + 1
+
+    background()
+    print("Current player: "+str(current_player))
+
+
 def gamescreen_3():
+
     global input_active
     input_active = False
     start = True
@@ -258,27 +286,59 @@ def gamescreen_3():
     event_active = False
     #'''
 
+    global pY_resources
+    global pO_resources
+    global pB_resources
+    global pR_resources
     pY_resources = 0
     pO_resources = 0
     pB_resources = 0
     pR_resources = 0
 
+    global rY_resources
+    global rO_resources
+    global rB_resources
+    global rR_resources
     rY_resources = 0
     rO_resources = 0
     rB_resources = 0
     rR_resources = 0
 
+    global gY_resources
+    global gO_resources
+    global gB_resources
+    global gR_resources
     gY_resources = 0
     gO_resources = 0
     gB_resources = 0
     gR_resources = 0
 
+    global bY_resources
+    global bO_resources
+    global bB_resources
+    global bR_resources
     bY_resources = 0
     bO_resources = 0
     bB_resources = 0
     bR_resources = 0
 
+
+
     while start:
+
+        pygame.draw.rect(gameDisplay, green, next_p_rect)
+
+        text_write("Current Player: " + str(player_list[current_player-1]), PA_font_mid, 760, 150)
+        text_write("Next Player", PA_font_mid, 792, 190)
+
+
+        if current_player == player_amount_num:
+            text_write("Purple Player gets " + str(pGet) + " resources", PA_font_mid, 400, 200)
+            text_write("Red Player gets " + str(rGet) + " resources", PA_font_mid, 400, 250)
+            text_write("Green gets " + str(gGet) + " resources", PA_font_mid, 400, 300)
+            text_write("Black gets " + str(bGet) + " resources", PA_font_mid, 400, 350)
+
+            #print("ohsheet")
 
         # resource_counter()  <- commented while working on resource + and - buttons
 
@@ -310,13 +370,13 @@ def gamescreen_3():
         pygame.draw.rect(gameDisplay, (0, 0, 255), blueRect)        #
         pygame.draw.rect(gameDisplay, (255, 0, 0), redRect)         #
 
-        pygame.draw.line(gameDisplay, black, (10, yellow_Y), (yellow_W*8.5+29, yellow_Y), 2)                                       # Draw horizontal lines
-        pygame.draw.line(gameDisplay, black, (10, yellow_Y+(yellow_H/4)), (yellow_W*8.5+29, yellow_Y+(yellow_H/4)), 2)             #
-        pygame.draw.line(gameDisplay, black, (10, yellow_Y+(yellow_H/2)), (yellow_W*8.5+29, yellow_Y+(yellow_H/2)), 2)             #
+        pygame.draw.line(gameDisplay, black, (10, yellow_Y), (yellow_W*8.5+31, yellow_Y), 2)                                       # Draw horizontal lines
+        pygame.draw.line(gameDisplay, black, (10, yellow_Y+(yellow_H/4)), (yellow_W*8.5+31, yellow_Y+(yellow_H/4)), 2)             #
+        pygame.draw.line(gameDisplay, black, (10, yellow_Y+(yellow_H/2)), (yellow_W*8.5+31, yellow_Y+(yellow_H/2)), 2)             #
         if player_amount_num >= 3:                                                                                                 #
-            pygame.draw.line(gameDisplay, black, (10, yellow_Y+(yellow_H*0.75)), (yellow_W*8.5+29, yellow_Y+(yellow_H*0.75)), 2)   #
+            pygame.draw.line(gameDisplay, black, (10, yellow_Y+(yellow_H*0.75)), (yellow_W*8.5+31, yellow_Y+(yellow_H*0.75)), 2)   #
             if player_amount_num == 4:                                                                                             #
-                pygame.draw.line(gameDisplay, black, (10, yellow_Y+yellow_H), (yellow_W*8.5+29, yellow_Y+yellow_H), 2)             #
+                pygame.draw.line(gameDisplay, black, (10, yellow_Y+yellow_H), (yellow_W*8.5+32, yellow_Y+yellow_H), 2)             #
 
         pygame.draw.line(gameDisplay, black, (yellow_X, yellow_Y), (yellow_X, yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))                              # Yellow vertical lines
         pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2, yellow_Y), (yellow_X+yellow_W/2, yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))        #
@@ -428,13 +488,17 @@ def gamescreen_3():
         event_button_txt = TINY_FONT.render("Random Event", True, white)        # Event Button Text
 
         for event in pygame.event.get():
-            #print(event)
             if event.type == pygame.QUIT:
                 exit()
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
                 print(plus_minus_list)
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 # 'Hardcore Mode'
+
+                pGet = ((pY_resources * 1) + (pO_resources * 2) + (pB_resources * 3) + (pR_resources * 4))
+                rGet = ((rY_resources * 1) + (rO_resources * 2) + (rB_resources * 3) + (rR_resources * 4))
+                gGet = ((gY_resources * 1) + (gO_resources * 2) + (gB_resources * 3) + (gR_resources * 4))
+                bGet = ((bY_resources * 1) + (bO_resources * 2) + (bB_resources * 3) + (bR_resources * 4))
 
                 if hardcore_button.collidepoint(event.pos):     # If hardcore button is clicked
                     background()                    # Refill background to white before redrawing
@@ -459,7 +523,10 @@ def gamescreen_3():
                 elif event_close.collidepoint(event.pos):                                       # If event closing button is clicked
                     event_active = False                                                        # Set event active to false
                     background()
-                    # Reset board
+                    # Reset
+
+                elif next_p_rect.collidepoint(event.pos):
+                    next_player()
 
                 # Really messy plus minus button click thing
 
@@ -590,10 +657,6 @@ def gamescreen_3():
                         bR_resources -= 1
                         background()
 
-                print(event.pos)
-                # print(plus_minus_list[0][0][0]) [320.0, 22.0]
-                # print(plus_minus_list[2][0][0]) #[360.0, 22.0]
-
 
         # 'Hardcore Mode'
         hardcore_button = pygame.Rect(890, 30, 60, 30)                                         # The "button" rect
@@ -617,6 +680,7 @@ def gamescreen_3():
             pygame.draw.rect(gameDisplay, (50, 130, 130), event_button)                        # Draw event button
             gameDisplay.blit(event_button_txt, (event_button.x + 10, event_button.y + 5))      # Blit event button text
         #'''
+
         pygame.display.update()
         clock.tick(60)
 
