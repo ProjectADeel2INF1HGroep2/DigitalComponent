@@ -243,13 +243,6 @@ def resource_counter():
     print_text(SMALL_FONT, 825, 675, "Turns: " + str(turns), white)
 
 
-
-    #print("Purple gets: "+str(pGet))
-    #print("Red gets: "+str(rGet))
-    #print("Green gets: "+str(gGet))
-    #print("Black gets: "+str(bGet))
-
-
 def next_player():
     global current_player
     global player_amount_num
@@ -335,8 +328,10 @@ def gamescreen_3():
         if current_player == player_amount_num:
             text_write("Purple Player gets " + str(pGet) + " resources", PA_font_mid, 400, 200)
             text_write("Red Player gets " + str(rGet) + " resources", PA_font_mid, 400, 250)
-            text_write("Green gets " + str(gGet) + " resources", PA_font_mid, 400, 300)
-            text_write("Black gets " + str(bGet) + " resources", PA_font_mid, 400, 350)
+            if player_amount_num >= 3:
+                text_write("Green gets " + str(gGet) + " resources", PA_font_mid, 400, 300)
+                if player_amount_num == 4:
+                    text_write("Black gets " + str(bGet) + " resources", PA_font_mid, 400, 350)
 
             #print("ohsheet")
 
@@ -461,24 +456,27 @@ def gamescreen_3():
 
         # Resource counters for each color
         text_write(str(pY_resources), PA_font_mid, yellow_X - 22, yellow_H/4)
-        text_write(str(rY_resources), PA_font_mid, yellow_X - 22, yellow_H/2)
-        text_write(str(gY_resources), PA_font_mid, yellow_X - 22, yellow_H*0.75)
-        text_write(str(bY_resources), PA_font_mid, yellow_X - 22, yellow_H)
-
         text_write(str(pO_resources), PA_font_mid, yellow_X + (yellow_W*1) + yellow_Gap - 22, yellow_H/4)
-        text_write(str(rO_resources), PA_font_mid, yellow_X + (yellow_W*1) + yellow_Gap - 22, yellow_H/2)
-        text_write(str(gO_resources), PA_font_mid, yellow_X + (yellow_W*1) + yellow_Gap - 22, yellow_H*0.75)
-        text_write(str(bO_resources), PA_font_mid, yellow_X + (yellow_W*1) + yellow_Gap - 22, yellow_H)
-
         text_write(str(pB_resources), PA_font_mid, yellow_X + (yellow_W*2) + (yellow_Gap*2) - 22, yellow_H/4)
-        text_write(str(rB_resources), PA_font_mid, yellow_X + (yellow_W*2) + (yellow_Gap*2) - 22, yellow_H/2)
-        text_write(str(gB_resources), PA_font_mid, yellow_X + (yellow_W*2) + (yellow_Gap*2) - 22, yellow_H*0.75)
-        text_write(str(bB_resources), PA_font_mid, yellow_X + (yellow_W*2) + (yellow_Gap*2) - 22, yellow_H)
-
         text_write(str(pR_resources), PA_font_mid, yellow_X + (yellow_W*3) + (yellow_Gap*3) - 22, yellow_H/4)
+
+        text_write(str(rY_resources), PA_font_mid, yellow_X - 22, yellow_H/2)
+        text_write(str(rO_resources), PA_font_mid, yellow_X + (yellow_W*1) + yellow_Gap - 22, yellow_H/2)
         text_write(str(rR_resources), PA_font_mid, yellow_X + (yellow_W*3) + (yellow_Gap*3) - 22, yellow_H/2)
-        text_write(str(gR_resources), PA_font_mid, yellow_X + (yellow_W*3) + (yellow_Gap*3) - 22, yellow_H*0.75)
-        text_write(str(bR_resources), PA_font_mid, yellow_X + (yellow_W*3) + (yellow_Gap*3) - 22, yellow_H)
+        text_write(str(rB_resources), PA_font_mid, yellow_X + (yellow_W*2) + (yellow_Gap*2) - 22, yellow_H/2)
+
+
+        if player_amount_num >= 3:
+            text_write(str(gY_resources), PA_font_mid, yellow_X - 22, yellow_H*0.75)
+            text_write(str(gO_resources), PA_font_mid, yellow_X + (yellow_W*1) + yellow_Gap - 22, yellow_H*0.75)
+            text_write(str(gB_resources), PA_font_mid, yellow_X + (yellow_W*2) + (yellow_Gap*2) - 22, yellow_H*0.75)
+            text_write(str(gR_resources), PA_font_mid, yellow_X + (yellow_W*3) + (yellow_Gap*3) - 22, yellow_H*0.75)
+
+            if player_amount_num == 4:
+                text_write(str(bY_resources), PA_font_mid, yellow_X - 22, yellow_H)
+                text_write(str(bO_resources), PA_font_mid, yellow_X + (yellow_W*1) + yellow_Gap - 22, yellow_H)
+                text_write(str(bB_resources), PA_font_mid, yellow_X + (yellow_W*2) + (yellow_Gap*2) - 22, yellow_H)
+                text_write(str(bR_resources), PA_font_mid, yellow_X + (yellow_W*3) + (yellow_Gap*3) - 22, yellow_H)
 
 
         # 'Hardcore Mode'
