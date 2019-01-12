@@ -19,3 +19,19 @@ def text_write(write_text, write_size, write_x, write_y):
 
     gameDisplay.blit(text_surface_shadow, text_rectangle_shadow)
     gameDisplay.blit(text_surface, text_rectangle)
+
+def draw_square(sqr_x, sqr_y, sqr_w, sqr_h, sqr_color, sqr_border, sqr_str=None):
+    sqr_rect = pygame.Rect(sqr_x, sqr_y, sqr_w, sqr_h)
+
+    pygame.draw.rect(gameDisplay, shadow, pygame.Rect(sqr_x + 3, sqr_y + 3, sqr_w, sqr_h))
+    pygame.draw.rect(gameDisplay, sqr_border, pygame.Rect(sqr_x - 1, sqr_y - 1, sqr_w + 2, sqr_h + 2))
+    pygame.draw.rect(gameDisplay, sqr_color, sqr_rect)
+
+    sqr_text = PA_fontSmall.render(sqr_str, True, white)
+    sqr_text_shadow = PA_fontSmall.render(sqr_str, True, shadow)
+    text_rect = sqr_text.get_rect(center=(sqr_x + (sqr_w / 2), sqr_y + (sqr_h / 2)))
+    text_shadow_rect = sqr_text_shadow.get_rect(center=(sqr_x + (sqr_w / 2) + 1, sqr_y + (sqr_h / 2) + 1))
+    gameDisplay.blit(sqr_text_shadow, text_shadow_rect)
+    gameDisplay.blit(sqr_text, text_rect)
+
+    return sqr_rect

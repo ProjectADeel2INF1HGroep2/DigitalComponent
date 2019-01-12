@@ -5,90 +5,77 @@ from local_variables import *
 from player_amount import *
 
 pygame.init()
-# Total resources for each player
-total_resource_list = [0, 0, 0, 0]
-player_list = ["Purple", "Red", "Green", "Black"]
-current_player = 1
 
+
+# Draw Background
 def background():
     gamemap = pygame.image.load(os.path.join(image_path, 'map-blur.jpg'))
-    gamemap = pygame.transform.scale(gamemap,(display_width,display_height))
-    gameDisplay.blit(gamemap, (0,0))
+    gamemap = pygame.transform.scale(gamemap, (display_width,display_height))
+    gameDisplay.blit(gamemap, (0, 0))
 
 
+# Display Logo
 def logo(x,y):
-    logoImg = pygame.image.load(os.path.join(image_path, 'logo.png'))
-    logoImg = pygame.transform.scale(logoImg, (int(display_height/2),int(display_width/2.66)))
-    gameDisplay.blit(logoImg, (x,y))
+    logo_img = pygame.image.load(os.path.join(image_path, 'logo.png'))
+    logo_img = pygame.transform.scale(logo_img, (int(display_height/2), int(display_width/2.66)))
+    gameDisplay.blit(logo_img, (x, y))
 
 
-def exit():
+# Exit the game (For Exit Button)
+def game_exit():
     pygame.quit()
     quit()
 
 
-def start_screen():
+# Update round counter
+def next_round():
+    global turns
 
-    intro = True
-
-    while intro:
-        for event in pygame.event.get():
-            # print(event)
-            if event.type == pygame.QUIT:
-                exit()
-
-        background()
-        logo(display_width * 0.31, display_height * 0.1)
-
-        # # title
-        # TextSurf, TextRectangle = textblock("Turf Wars", LARGE_FONT)
-        # TextRectangle.center = ((display_width / 2),((display_height *0.5)))
-        # gameDisplay.blit(TextSurf, TextRectangle)
-
-        #buttons
-        button('Start',150,550,300,150,bright_blue,blue,playerinput_screen)
-        button('Exit', 550,550,300,150,red,bright_red,exit)
-
-        pygame.display.update()
-        clock.tick(15)
-
-def player_amount_screen():
+    turns = turns + 1
     background()
 
 
-def playerinput_screen():
-    gameDisplay.fill(white)
-    gameExit = False
-    fpsclock = pygame.time.Clock()
-    fps = 30
-    global PurplePlayer
-    global RedPlayer
-    global GreenPlayer
-    global BlackPlayer
+# Initial Screen
+def start_screen():
 
-    input_active = True
-    while not gameExit and input_active:
-        fpsclock.tick(fps)
-        pressed = None
-        background()
+    global current_screen                                                               # Get variable from local_variables
+    current_screen = "Start Screen"                                                     # Set screen to "Start Screen"
 
+    while current_screen == "Start Screen":
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
+            if event.type == pygame.QUIT:                                               # Exit game
+                game_exit()
 
-            # Player Amount
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+        background()                                                                    # Draw Background
+        logo(display_width * 0.31, display_height * 0.1)                                # Draw Logo in Start Screen
 
-                global player_amount_num
-                global player_amount_done
+        # Start Screen Buttons
+        button('Start', 150, 550, 300, 150, bright_blue, blue, player_amount_screen)    # Start Button
+        button('Exit', 550, 550, 300, 150, red, bright_red, game_exit)                  # Exit Button
+
+        pygame.display.update()
+
+
+# Player Amount Selection Screen
+def player_amount_screen():
+    global current_screen                                                           # Get variable from local_variables
+    global player_amount_num                                                        # Declare player amount global variable used in game_screen
+
+    current_screen = "Player Amount Screen"                                         # Set screen to "Player Amount Screen"
+    background()                                                                    # Reset Background
+
+    while current_screen == "Player Amount Screen":
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:          # If left clicked
+
                 # Check if Player Amount Boxes are clicked
-                if startPlayer2.collidepoint(event.pos):  # If click event matches position of button 2
-                    if not player_amount_num == 2:  # If player amount is not equal to 2
-                        startPlayer2.y += 2  # Raise y by 2
-                    if player_amount_num == 3:
-                        startPlayer3.y -= 2
-                    elif player_amount_num == 4:
-                        startPlayer4.y -= 2
+                if startPlayer2.collidepoint(event.pos):                            # If click event matches position of button 2
+                    if not player_amount_num == 2:                                  # If player amount is not equal to 2 (2 is not already active)
+                        startPlayer2.y += 2                                         # Increase 2's y position (Draw button in "Pressed" position)
+                    if player_amount_num == 3:                                      # If player amount is 3
+                        startPlayer3.y -= 2                                         # Decrease 3's y position (Draw as "Unpressed")
+                    elif player_amount_num == 4:                                    # If player amount is 4
+                        startPlayer4.y -= 2                                         # Decrease 4's y position (Draw as "Unpressed")
                     player_amount_num = 2
                 elif startPlayer3.collidepoint(event.pos):
                     if not player_amount_num == 3:
@@ -106,605 +93,311 @@ def playerinput_screen():
                     elif player_amount_num == 3:
                         startPlayer3.y -= 2
                     player_amount_num = 4
-                elif startPlayerContinue.collidepoint(event.pos):
-                    player_amount_done = True
-                    background()
+                elif startPlayerContinue.collidepoint(event.pos):                   # Continue to Player Input Screen
+                    player_input_screen()
 
-        if not player_amount_done:
-            # Starting Player Selection ==============================================
-            pygame.draw.rect(gameDisplay, (30, 30, 30), startPlayerBgBorder)      # Player Amount Background Border
-            pygame.draw.rect(gameDisplay, (220, 200, 80), startPlayerBackground)  # Player Amount Background Rect
+        # Draw the Player Amount Selection Elements =================================================================================
 
-            text_write("Select Player Amount", PA_font_mid, player_amount_x, player_amount_y - 25)  # Player Amount Text
-            # Draw Selection Rects ===================================================
-            pygame.draw.rect(gameDisplay, player_amount_shadow, startPlayerShadow)          # Shadow behind buttons
+        # Draw Background
+        pygame.draw.rect(gameDisplay, shadow, startPlayerBgBorder)                            # Player Amount Background Border
+        pygame.draw.rect(gameDisplay, (220, 200, 80), startPlayerBackground)                        # Player Amount Background Rect
 
-            pygame.draw.rect(gameDisplay, player_amount_color, startPlayer2)        # 2 Players Button Rect
-            text_write("2", 30, startPlayer2.x + 5, startPlayer2.y + 9)             # 2 Players Text
-            pygame.draw.rect(gameDisplay, player_amount_color, startPlayer3)        # 3 Players Button Rect
-            text_write("3", 30, startPlayer3.x + 4, startPlayer3.y + 9)             # 3 Players Text
-            pygame.draw.rect(gameDisplay, player_amount_color, startPlayer4)        # 4 Players Button Rect
-            text_write("4", 30, startPlayer4.x + 3, startPlayer4.y + 9)             # 4 Players Text
+        text_write("Select Player Amount", PA_font_mid, player_amount_x, player_amount_y - 25)      # Player Amount Text
 
-            pygame.draw.rect(gameDisplay, player_amount_shadow, startPlayerContinueShadow)  # Continue Button Shadow
-            pygame.draw.rect(gameDisplay, (50, 200, 50), startPlayerContinue)               # Continue Button
-            text_write("Continue", PA_font_mid, startPlayerContinue.x + 4, startPlayerContinue.y + 8)  # Continue Text
+        # Draw Selection Rects
+        pygame.draw.rect(gameDisplay, shadow, startPlayerShadow)                      # Shadow behind buttons
+
+        pygame.draw.rect(gameDisplay, player_amount_color, startPlayer2)                            # 2 Players Button Rect
+        text_write("2", 30, startPlayer2.x + 5, startPlayer2.y + 9)                                 # 2 Players Text
+        pygame.draw.rect(gameDisplay, player_amount_color, startPlayer3)                            # 3 Players Button Rect
+        text_write("3", 30, startPlayer3.x + 4, startPlayer3.y + 9)                                 # 3 Players Text
+        pygame.draw.rect(gameDisplay, player_amount_color, startPlayer4)                            # 4 Players Button Rect
+        text_write("4", 30, startPlayer4.x + 3, startPlayer4.y + 9)                                 # 4 Players Text
+
+        # Draw Continue Button
+        pygame.draw.rect(gameDisplay, shadow, startPlayerContinueShadow)              # Continue Button Shadow
+        pygame.draw.rect(gameDisplay, (50, 200, 50), startPlayerContinue)                           # Continue Button
+        text_write("Continue", PA_font_mid, startPlayerContinue.x + 4, startPlayerContinue.y + 8)   # Continue Text
+
+        # ===========================================================================================================================
+
+        pygame.display.update()
 
 
-        if player_amount_done:
-            if not PurplePlayer:
-                PurplePlayer = enter_text(15)
+# Player name input screen
+def player_input_screen():
 
-                pygame.draw.rect(gameDisplay, purple, (120,500,150,40))
-                print_text(TINY_FONT, 130, 505, PurplePlayer, white)
+    global current_screen                         # Get current screen variable
+    current_screen = "Player Input Screen"        # Set current_screen to "Player Input Screen"
 
-            if not RedPlayer:
-                RedPlayer = enter_text(15)
-                pygame.draw.rect(gameDisplay, red, (320,500,150,40))
-                print_text(TINY_FONT, 330, 505, RedPlayer, white)
+    background()
 
-            if not GreenPlayer and player_amount_num >= 3:
-                GreenPlayer = enter_text(15)
-                pygame.draw.rect(gameDisplay, green, (520,500,150,40))
-                print_text(TINY_FONT, 530, 505, GreenPlayer, white)
+    while current_screen == "Player Input Screen":
+        for event in pygame.event.get():
+            # Exit Game
+            if event.type == pygame.QUIT:
+                game_exit()
 
-            if not BlackPlayer and player_amount_num == 4:
-                BlackPlayer = enter_text(15)
+        # Enter first player name, add to player_list
+        if not player_list[0]:
+            player_list[0] = enter_text(15)
 
-            background()
-
-            playerText = "Player 1:"
-
-            print_text(TINY_FONT, 125, 470, "Player 1:", black)
             pygame.draw.rect(gameDisplay, purple, (120,500,150,40))
-            print_text(TINY_FONT, 130, 505, PurplePlayer, white)
+            print_text(TINY_FONT, 130, 505, player_list[0], white)
 
-            print_text(TINY_FONT, 325, 470, "Player 2:", black)
+        # Enter second player name, add to player_list
+        if not player_list[1]:
+            player_list[1] = enter_text(15)
             pygame.draw.rect(gameDisplay, red, (320,500,150,40))
-            print_text(TINY_FONT, 330, 505, RedPlayer, white)
+            print_text(TINY_FONT, 330, 505, player_list[1], white)
 
-            if player_amount_num >= 3:
-                print_text(TINY_FONT, 525, 470, "Player 3:", black)
-                pygame.draw.rect(gameDisplay, green, (520,500,150,40))
-                print_text(TINY_FONT, 530, 505, GreenPlayer, white)
+        # (If at least 3 players) Enter third player name, add to player_list
+        if not player_list[2] and player_amount_num >= 3:
+            player_list[2] = enter_text(15)
+            pygame.draw.rect(gameDisplay, green, (520,500,150,40))
+            print_text(TINY_FONT, 530, 505, player_list[2], white)
 
-                if player_amount_num == 4:
-                    print_text(TINY_FONT, 725, 470, "Player 4:", black)
-                    pygame.draw.rect(gameDisplay, black, (720,500,150,40))
-                    print_text(TINY_FONT, 730, 505, BlackPlayer, white)
+        # (If 4 players) Enter fourth player name, add to player_list
+        if not player_list[3] and player_amount_num == 4:
+            player_list[3] = enter_text(15)
 
-            button('Proceed',350,250,300,150,bright_green,green,gamescreen_3)
+        background()  # Reset Background
 
-        pygame.display.update()
-        clock.tick(15)
+        # Display player 1
+        print_text(TINY_FONT, 125, 470, "Player 1:", black)
+        pygame.draw.rect(gameDisplay, purple, (120,500,150,40))
+        print_text(TINY_FONT, 130, 505, player_list[0], white)
 
+        # Display player 2
+        print_text(TINY_FONT, 325, 470, "Player 2:", black)
+        pygame.draw.rect(gameDisplay, red, (320,500,150,40))
+        print_text(TINY_FONT, 330, 505, player_list[1], white)
 
-def resource_counter():
-
-    # TODO: Build a while loop which keeps going if the game is active.
-    # TODO: Add a turn counter in the game loop.
-    # TODO: Store the values per player so they can be remembered and used again.
-    # TODO: Make the amount of players variable.
-
-    # Defining the variables
-    global turns
-    global current_player
-    current_player = 1
-    global player_resources
-    player_resources = 0
-    global current_player_name
-    current_player_name = 0
-
-    while current_player <= player_amount_num:
-
-        if current_player == 1:
-            current_player_name = PurplePlayer
-        elif current_player == 2:
-            current_player_name = RedPlayer
+        # If at least 3 players:
         if player_amount_num >= 3:
-            if current_player == 3:
-                current_player_name = GreenPlayer
+
+            # Display player 3
+            print_text(TINY_FONT, 525, 470, "Player 3:", black)
+            pygame.draw.rect(gameDisplay, green, (520,500,150,40))
+            print_text(TINY_FONT, 530, 505, player_list[2], white)
+
+            # If 4 players:
             if player_amount_num == 4:
-                if current_player == 4:
-                    current_player_name = BlackPlayer
 
-        '''
-        # Let the user input the amount of land they own
-        yellow_amount = enter_resources(2, "yellow", str(current_player_name))
-        background()
-        orange_amount = enter_resources(2, "orange", str(current_player_name))
-        background()
-        blue_amount = enter_resources(2, "blue", str(current_player_name))
-        background()
-        red_amount = enter_resources(2, "red", str(current_player_name))
-        background()
-        
-        # Calculates the amount of land and multiplies it with the value of the land
-        yellow = int(yellow_amount) * 1
-        orange = int(orange_amount) * 2
-        blue = int(blue_amount) * 3
-        red = int(red_amount) * 4
-        
-        # Counts up the four given values
-        player_resources = player_resources + yellow + orange + blue + red
-        total_resource_list[current_player-1] += player_resources  # add player resources to the corresponding player in total_resource_list
-        background()
-        print_text(SMALL_FONT, 125, 470, "Player " + str(current_player_name) + " gets " + str(player_resources) + " resources.", white)
+                # Display player 4
+                print_text(TINY_FONT, 725, 470, "Player 4:", black)
+                pygame.draw.rect(gameDisplay, black, (720,500,150,40))
+                print_text(TINY_FONT, 730, 505, player_list[3], white)
 
-        # Continues to the next player and puts the playerResources on zero
-        current_player = current_player + 1
+        # Button to game_screen
+        button('Proceed', 350, 250, 300, 150, bright_green, green, game_screen)
 
-        player_resources = 0
-        '''
-
-    # Resets the loop
-    turns = turns + 1
-    print(turns)
-    print_text(SMALL_FONT, 825, 675, "Turns: " + str(turns), white)
-
-
-def next_player():
-    global current_player
-    global player_amount_num
-    global turns
-
-    if current_player == player_amount_num:
-        current_player = 1
         pygame.display.update()
 
-        pGet = ((pY_resources * 1) + (pO_resources * 2) + (pB_resources * 3) + (pR_resources * 4))
-        rGet = ((rY_resources * 1) + (rO_resources * 2) + (rB_resources * 3) + (rR_resources * 4))
-        gGet = ((gY_resources * 1) + (gO_resources * 2) + (gB_resources * 3) + (gR_resources * 4))
-        bGet = ((bY_resources * 1) + (bO_resources * 2) + (bB_resources * 3) + (bR_resources * 4))
 
-        total_resource_list[0] += pGet
-        total_resource_list[1] += rGet
-        total_resource_list[2] += gGet
-        total_resource_list[3] += bGet
-
-        turns = turns + 1
-
-    else:
-        current_player = current_player + 1
+# Game screen
+def game_screen():
+    global current_screen
+    current_screen = "Game Screen"
 
     background()
 
-def gamescreen_3():
-
-    global input_active
-    input_active = False
-    start = True
-    background()
-
-    #'''
-    # 'Hardcore Mode'
+    # 'Hardcore Mode' variables
     hardcore_setting = False
     hardcore_color = red
-    event_list = ['You gain 1 resource', 'You gain 3 resources', 'You gain 5 resources',
-                  'You lose 1 resource', 'You lose 3 resources', 'You lose 5 resources',
-                  'You gain 1 troop', 'You gain 3 troops', 'You gain 5 troops',
-                  'You lose 1 troop', 'You lose 3 troops', 'You lose 5 troops']
     event_msg = random.choice(event_list)
     event_active = False
-    #'''
+    show_resource_gain = False
 
-    global pY_resources
-    global pO_resources
-    global pB_resources
-    global pR_resources
-    pY_resources = 0
-    pO_resources = 0
-    pB_resources = 0
-    pR_resources = 0
+    # Placeholders
+    event_close = draw_square(display_width + 200, 10, 10, 10, white, white, "Placeholder")
+    event_button = draw_square(display_width + 200, 200, 10, 10, white, white, "Placeholder")
 
-    global rY_resources
-    global rO_resources
-    global rB_resources
-    global rR_resources
-    rY_resources = 0
-    rO_resources = 0
-    rB_resources = 0
-    rR_resources = 0
+    while current_screen == "Game Screen":
+        text_write("Round: " + str(turns), PA_font_big, 20, 700)  # Turn Counter Text
 
-    global gY_resources
-    global gO_resources
-    global gB_resources
-    global gR_resources
-    gY_resources = 0
-    gO_resources = 0
-    gB_resources = 0
-    gR_resources = 0
+        # Draw Buttons
+        round_rect = draw_square(790, 115, 110, 40, green, light_green, "Next Round:")                              # Next Round Button
+        end_rect = draw_square(display_width-110, display_height-50, 100, 40, purple, light_purple, "End Game")     # End Button
 
-    global bY_resources
-    global bO_resources
-    global bB_resources
-    global bR_resources
-    bY_resources = 0
-    bO_resources = 0
-    bB_resources = 0
-    bR_resources = 0
+        hardcore_bg = draw_square(730, 15, 230, 40, bright_red, white)                                              # Background rect, scaled to button rect
+        text_write("Hardcore Mode:", PA_font_mid, hardcore_bg.x+10, hardcore_bg.y+10)                               # Hardcore mode Text
+        hardcore_button = draw_square(hardcore_bg.x+160, hardcore_bg.y + 5, hardcore_bg.width - 170,
+                                      hardcore_bg.height - 10, hardcore_color, white, str(hardcore_setting))        # Hardcore Button
 
+        # If hardcore is set to True, draw event button, then blit event button text
+        if hardcore_setting:
+            event_button = draw_square(round_rect.x-10, round_rect.y-round_rect.h-10, 130, 40, blue, (50, 50, 255), "Random Event")
 
-    while start:
-        #global turns
-        pygame.draw.rect(gameDisplay, green, next_p_rect)
+        # Formulas to calculate how many resources each player gets at the end of each round
+        purple_gets = ((purple_resources[0] * 1) + (purple_resources[1] * 2) + (purple_resources[2] * 3) + (purple_resources[3] * 4))
+        red_gets = ((red_resources[0] * 1) + (red_resources[1] * 2) + (red_resources[2] * 3) + (red_resources[3] * 4))
+        green_gets = ((green_resources[0] * 1) + (green_resources[1] * 2) + (green_resources[2] * 3) + (green_resources[3] * 4))
+        black_gets = ((black_resources[0] * 1) + (black_resources[1] * 2) + (black_resources[2] * 3) + (black_resources[3] * 4))
 
-        text_write("Current Player: " + str(player_list[current_player-1]), PA_font_mid, 760, 150)
-        text_write("Next Player", PA_font_mid, 792, 190)
-        text_write("Round: " + str(turns), PA_font_big, 20, 700)
-
-
-        if current_player == 1 and turns > 0:
-            text_write(str(PurplePlayer)+" gets " + str(pGet) + " resources", PA_font_mid, 400, 200)
-            text_write(str(RedPlayer)+ " gets " + str(rGet) + " resources", PA_font_mid, 400, 250)
+        # Popup message showing the resources each player gets at the end of a round
+        if show_resource_gain:
+            text_write(str(player_list[0]) + " gets " + str(purple_gets) + " resources", PA_font_mid, 400, 200)
+            text_write(str(player_list[1]) + " gets " + str(red_gets) + " resources", PA_font_mid, 400, 250)
             if player_amount_num >= 3:
-                text_write(str(GreenPlayer)+ " gets " + str(gGet) + " resources", PA_font_mid, 400, 300)
+                text_write(str(player_list[2]) + " gets " + str(green_gets) + " resources", PA_font_mid, 400, 300)
                 if player_amount_num == 4:
-                    text_write(str(BlackPlayer)+" gets " + str(bGet) + " resources", PA_font_mid, 400, 350)
+                    text_write(str(player_list[3]) + " gets " + str(black_gets) + " resources", PA_font_mid, 400, 350)
 
-        # resource_counter()  <- commented while working on resource + and - buttons
+        # Player Names in the Resource Menu
+        text_write(str(player_list[0]), PA_font_mid, player_amount_x, yellow_H / 4)
+        text_write(str(player_list[1]), PA_font_mid, player_amount_x, yellow_H / 2)
+        if player_amount_num >= 3:
+            text_write(str(player_list[2]), PA_font_mid, player_amount_x, yellow_H * 0.75)
+            if player_amount_num == 4:
+                text_write(str(player_list[3]), PA_font_mid, player_amount_x, yellow_H)
 
-        # Resource Menu
-        yellow_X = 320   # Most of the stuff in the resource menu scales off of these
-        yellow_Y = 20    #
-        yellow_W = 80    #
-        yellow_H = 140   #
-        yellow_Gap = 24  #
+        # Define rects for Resource menu + and - buttons (Colored Background)
+        yellow_rect = pygame.Rect(yellow_X, yellow_Y, yellow_W, yellow_H / 2 + ((yellow_H / 4) * (player_amount_num - 2)))
+        orange_rect = pygame.Rect(yellow_X + yellow_W + yellow_Gap, yellow_Y, yellow_W, yellow_H / 2 + ((yellow_H / 4) * (player_amount_num - 2)))
+        blue_rect = pygame.Rect(orange_rect.x + yellow_W + yellow_Gap, yellow_Y, yellow_W, yellow_H / 2 + ((yellow_H / 4) * (player_amount_num - 2)))
+        red_rect = pygame.Rect(blue_rect.x + yellow_W + yellow_Gap, yellow_Y, yellow_W, yellow_H / 2 + ((yellow_H / 4) * (player_amount_num - 2)))
 
-        text_write(str(PurplePlayer)+"'s Resources: " + str(total_resource_list[0]), PA_font_mid, player_amount_x, yellow_H/4)           # Player resource text, left side
-        text_write(str(RedPlayer)+"'s Resources: " + str(total_resource_list[1]), PA_font_mid, player_amount_x, yellow_H/2)              #
-        if player_amount_num >= 3:                                                                                                #
-            text_write(str(GreenPlayer)+"'s Resources: " + str(total_resource_list[2]), PA_font_mid, player_amount_x, yellow_H*0.75)     #
-            if player_amount_num == 4:                                                                                            #
-                text_write(str(BlackPlayer)+"'s Resources: " + str(total_resource_list[3]), PA_font_mid, player_amount_x, yellow_H)      #
+        # Draw colored rects for + and - buttons (Colored Background)
+        pygame.draw.rect(gameDisplay, (255, 255, 0), yellow_rect)
+        pygame.draw.rect(gameDisplay, (255, 128, 0), orange_rect)
+        pygame.draw.rect(gameDisplay, (0, 0, 255), blue_rect)
+        pygame.draw.rect(gameDisplay, (255, 0, 0), red_rect)
 
-        yellowRect = pygame.Rect(yellow_X, yellow_Y, yellow_W, yellow_H/2 + ((yellow_H/4)*(player_amount_num-2)))                         # Colored rects for + and - buttons
-        orangeRect = pygame.Rect(yellow_X+yellow_W+yellow_Gap, yellow_Y, yellow_W, yellow_H/2 + ((yellow_H/4)*(player_amount_num-2)))     #
-        blueRect = pygame.Rect(orangeRect.x+yellow_W+yellow_Gap, yellow_Y, yellow_W, yellow_H/2 + ((yellow_H/4)*(player_amount_num-2)))   #
-        redRect = pygame.Rect(blueRect.x+yellow_W+yellow_Gap, yellow_Y, yellow_W, yellow_H/2 + ((yellow_H/4)*(player_amount_num-2)))      #
+        # Creates surface with alpha channel / transparency, fill the surface, then blit the surface
+        alpha_bg_surf = pygame.Surface((yellow_X + (yellow_W*5) + (yellow_Gap*3) + (yellow_line_thickness-1) - yellow_x_margin, yellow_H / 2 + (player_amount_num - 2) * (yellow_H / 4)), pygame.SRCALPHA, 32)
+        alpha_bg_surf.fill((100, 100, 100, 1))
+        gameDisplay.blit(alpha_bg_surf, (yellow_X - 210, yellow_rect.y))
 
-        alpha_bgSurf = pygame.Surface((yellow_W*8.5+20, yellow_H/2 + (player_amount_num-2)*(yellow_H/4)), pygame.SRCALPHA, 32)    # Creates surface with alpha channel / transparency
-        alpha_bgSurf.fill((100, 100, 100, 1))                                                                                     # Fill the surface
-        gameDisplay.blit(alpha_bgSurf, (yellow_Y/2, yellow_Y))                                                                    # Blit the surface
+        # Draw horizontal lines for the Resource Counter Frame, scaled to the amount of players
+        for hor_line in range(player_amount_num + 1):
+            pygame.draw.line(gameDisplay, black, (yellow_x_margin, yellow_Y + ((yellow_H/4)*hor_line)), (yellow_X + (yellow_W*5) + (yellow_Gap*3), yellow_Y + ((yellow_H/4)*hor_line)), yellow_line_thickness)
 
-        pygame.draw.rect(gameDisplay, (255, 255, 0), yellowRect)    # Draw colored rects for + and - buttons
-        pygame.draw.rect(gameDisplay, (255, 128, 0), orangeRect)    #
-        pygame.draw.rect(gameDisplay, (0, 0, 255), blueRect)        #
-        pygame.draw.rect(gameDisplay, (255, 0, 0), redRect)         #
-
-        pygame.draw.line(gameDisplay, black, (10, yellow_Y), (yellow_W*8.5+31, yellow_Y), 2)                                       # Draw horizontal lines
-        pygame.draw.line(gameDisplay, black, (10, yellow_Y+(yellow_H/4)), (yellow_W*8.5+31, yellow_Y+(yellow_H/4)), 2)             #
-        pygame.draw.line(gameDisplay, black, (10, yellow_Y+(yellow_H/2)), (yellow_W*8.5+31, yellow_Y+(yellow_H/2)), 2)             #
-        if player_amount_num >= 3:                                                                                                 #
-            pygame.draw.line(gameDisplay, black, (10, yellow_Y+(yellow_H*0.75)), (yellow_W*8.5+31, yellow_Y+(yellow_H*0.75)), 2)   #
-            if player_amount_num == 4:                                                                                             #
-                pygame.draw.line(gameDisplay, black, (10, yellow_Y+yellow_H), (yellow_W*8.5+32, yellow_Y+yellow_H), 2)             #
-
-        pygame.draw.line(gameDisplay, black, (yellow_X, yellow_Y), (yellow_X, yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))                              # Yellow vertical lines
-        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2, yellow_Y), (yellow_X+yellow_W/2, yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))        #
-        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*2, yellow_Y), (yellow_X+yellow_W/2*2, yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    #
-
-        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*2 + yellow_Gap, yellow_Y), (yellow_X+yellow_W/2*2 + yellow_Gap, yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    # Orange vertical lines
-        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*3 + yellow_Gap, yellow_Y), (yellow_X+yellow_W/2*3 + yellow_Gap, yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    #
-        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*4 + yellow_Gap, yellow_Y), (yellow_X+yellow_W/2*4 + yellow_Gap, yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    #
-
-        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*4 + (yellow_Gap*2), yellow_Y), (yellow_X+yellow_W/2*4 + (yellow_Gap*2), yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    # Blue vertical lines
-        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*5 + (yellow_Gap*2), yellow_Y), (yellow_X+yellow_W/2*5 + (yellow_Gap*2), yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    #
-        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*6 + (yellow_Gap*2), yellow_Y), (yellow_X+yellow_W/2*6 + (yellow_Gap*2), yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    #
-
-        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*6 + (yellow_Gap*3), yellow_Y), (yellow_X+yellow_W/2*6 + (yellow_Gap*3), yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    # Black vertical lines
-        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*7 + (yellow_Gap*3), yellow_Y), (yellow_X+yellow_W/2*7 + (yellow_Gap*3), yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    #
-        pygame.draw.line(gameDisplay, black, (yellow_X+yellow_W/2*8 + (yellow_Gap*3), yellow_Y), (yellow_X+yellow_W/2*8 + (yellow_Gap*3), yellow_Y+(yellow_H/2)+((yellow_H/4)*(player_amount_num-2))))    #
+        # Draw vertical lines for the Resource Counter Frame
+        for vert_line in range(12):
+            pygame.draw.line(gameDisplay, black, (yellow_X + yellow_W / 2 * vert_line + (yellow_Gap*(vert_line//3)) - ((yellow_W/2)*(vert_line//3)), yellow_Y),
+                             (yellow_X + yellow_W / 2 * vert_line + (yellow_Gap*(vert_line//3)) - ((yellow_W/2)*(vert_line//3)), yellow_Y + (yellow_H / 2) + ((yellow_H / 4) * (player_amount_num - 2))))
 
         # Draw pluses
         for plusRepeat in range(4):
             for plus in range(player_amount_num):
+
+                # Horizontal Lines
                 pygame.draw.line(gameDisplay, green,
-                                 (yellow_X+yellow_W/8+(yellow_W*plusRepeat)+(yellow_Gap*plusRepeat), yellow_Y+yellow_H/8+(yellow_H/8*(plus*2))),
-                                 (yellow_X+yellow_W/8+yellow_W*0.25+(yellow_W*plusRepeat)+(yellow_Gap*plusRepeat), yellow_Y+yellow_H/8+(yellow_H/8*(plus*2))), 2)
+                                 (yellow_X + yellow_W / 8 + (yellow_W * plusRepeat) + (yellow_Gap * plusRepeat), yellow_Y + yellow_H / 8 + (yellow_H / 8 * (plus * 2))),
+                                 (yellow_X + yellow_W / 8 + (yellow_W * plusRepeat) + (yellow_Gap * plusRepeat) + yellow_W * 0.25, yellow_Y + yellow_H / 8 + (yellow_H / 8 * (plus * 2))), 2)
+
+                # Vertical Lines
                 pygame.draw.line(gameDisplay, green,
-                                 (yellow_X+yellow_W/4+(yellow_W*plusRepeat)+(yellow_Gap*plusRepeat), yellow_Y+(yellow_H/16+((yellow_H/8)*(plus*2)))),
-                                 (yellow_X+yellow_W/4+(yellow_W*plusRepeat)+(yellow_Gap*plusRepeat), yellow_Y+(yellow_H/16*3+((yellow_H/8)*(plus*2)))), 2)
+                                 (yellow_X + yellow_W / 4 + (yellow_W * plusRepeat) + (yellow_Gap * plusRepeat), yellow_Y + (yellow_H / 16 + ((yellow_H / 8) * (plus * 2)))),
+                                 (yellow_X + yellow_W / 4 + (yellow_W * plusRepeat) + (yellow_Gap * plusRepeat), yellow_Y + (yellow_H / 16 * 3 + ((yellow_H / 8) * (plus * 2)))), 2)
 
         # Draw minuses
         for minRepeat in range(4):
             for minus in range(player_amount_num):
                 pygame.draw.line(gameDisplay, red,
-                                 (yellow_X+yellow_W/2+(yellow_W/8)+(yellow_W*minRepeat)+(yellow_Gap*minRepeat), yellow_Y+yellow_H/8+(yellow_H/8*(minus*2))),
-                                 (yellow_X+yellow_W/2+(yellow_W/8*3)+(yellow_W*minRepeat)+(yellow_Gap*minRepeat), yellow_Y+yellow_H/8+(yellow_H/8*(minus*2))), 2)
+                                 (yellow_X + yellow_W / 2 + (yellow_W / 8) + (yellow_W * minRepeat) + (yellow_Gap * minRepeat), yellow_Y + yellow_H / 8 + (yellow_H / 8 * (minus * 2))),
+                                 (yellow_X + yellow_W / 2 + (yellow_W / 8 * 3) + (yellow_W * minRepeat) + (yellow_Gap * minRepeat), yellow_Y + yellow_H / 8 + (yellow_H / 8 * (minus * 2))), 2)
 
-        # Plus / Minus List
-        plus_minus_list = [[[], [], [], [], [], [], [], []],
-                           [[], [], [], [], [], [], [], []],
-                           [[], [], [], [], [], [], [], []],
-                           [[], [], [], [], [], [], [], []]]
-
-        # Fill in the plus_minus_list in a real inefficient way but meh it's late
+        # Fill in the plus_minus_list with the x,y coordinates of each individual + and - button
         for PMRow in range(4):
             for PMColumn in range(8):
-                if PMColumn < 2 and PMRow == 0:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn), (yellow_Y)+((yellow_W/2)*PMRow)+2])
-                elif 2 <= PMColumn < 4 and PMRow == 0:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap + 2), yellow_Y+((yellow_W/2)*PMRow)+2])
-                elif 4 <= PMColumn < 6 and PMRow == 0:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*2 + 2), yellow_Y+((yellow_W/2)*PMRow)+2])
-                elif PMColumn > 5 and PMRow == 0:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*3 + 2), yellow_Y+((yellow_W/2)*PMRow)+2])
 
-                elif PMColumn < 2 and PMRow == 1:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn), (yellow_Y)+((yellow_W/2)*PMRow)-2])
-                elif 2 <= PMColumn < 4 and PMRow == 1:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap + 2), yellow_Y+((yellow_W/2)*PMRow)-2])
-                elif 4 <= PMColumn < 6 and PMRow == 1:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*2 + 2), yellow_Y+((yellow_W/2)*PMRow)-2])
-                elif PMColumn > 5 and PMRow == 1:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*3 + 2), yellow_Y+((yellow_W/2)*PMRow)-2])
+                button_coords = [yellow_X + ((yellow_W / 2) * PMColumn) + (yellow_Gap * PMColumn//1.8 - (2*(PMColumn//1.8))),
+                                 yellow_Y + ((yellow_W / 2) * PMRow) + 2 - (PMRow // 1.5 * 4 + (PMRow * 2) + (min(PMRow, 1) * 2))]
 
-                elif PMColumn < 2 and PMRow == 2:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn), (yellow_Y)+((yellow_W/2)*PMRow)-8])
-                elif 2 <= PMColumn < 4 and PMRow == 2:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap + 2), yellow_Y+((yellow_W/2)*PMRow)-8])
-                elif 4 <= PMColumn < 6 and PMRow == 2:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*2 + 2), yellow_Y+((yellow_W/2)*PMRow)-8])
-                elif PMColumn > 5 and PMRow == 2:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*3 + 2), yellow_Y+((yellow_W/2)*PMRow)-8])
-
-                elif PMColumn < 2 and PMRow == 3:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn), (yellow_Y)+((yellow_W/2)*PMRow)-12])
-                elif 2 <= PMColumn < 4 and PMRow == 3:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap + 2), yellow_Y+((yellow_W/2)*PMRow)-12])
-                elif 4 <= PMColumn < 6 and PMRow == 3:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*2 + 2), yellow_Y+((yellow_W/2)*PMRow)-12])
-                elif PMColumn > 5 and PMRow == 3:
-                    plus_minus_list[PMRow][PMColumn].append([yellow_X+((yellow_W/2)*PMColumn)+(yellow_Gap*3 + 2), yellow_Y+((yellow_W/2)*PMRow)-12])
-
-
-                #'''
+                plus_minus_list[PMRow][PMColumn].append(button_coords)
 
         # Resource counters for each color
-        text_write(str(pY_resources), PA_font_mid, yellow_X - 22, yellow_H/4)
-        text_write(str(pO_resources), PA_font_mid, yellow_X + (yellow_W*1) + yellow_Gap - 22, yellow_H/4)
-        text_write(str(pB_resources), PA_font_mid, yellow_X + (yellow_W*2) + (yellow_Gap*2) - 22, yellow_H/4)
-        text_write(str(pR_resources), PA_font_mid, yellow_X + (yellow_W*3) + (yellow_Gap*3) - 22, yellow_H/4)
 
-        text_write(str(rY_resources), PA_font_mid, yellow_X - 22, yellow_H/2)
-        text_write(str(rO_resources), PA_font_mid, yellow_X + (yellow_W*1) + yellow_Gap - 22, yellow_H/2)
-        text_write(str(rR_resources), PA_font_mid, yellow_X + (yellow_W*3) + (yellow_Gap*3) - 22, yellow_H/2)
-        text_write(str(rB_resources), PA_font_mid, yellow_X + (yellow_W*2) + (yellow_Gap*2) - 22, yellow_H/2)
+        # Yellow counters
+        for y_count in range(4):
+                text_write(str(purple_resources[y_count]), PA_font_mid, yellow_X - 22 + (yellow_W * y_count) + (yellow_Gap * y_count), yellow_H / 4)
 
+        # Red Counters
+        for r_count in range(4):
+            text_write(str(red_resources[r_count]), PA_font_mid, yellow_X - 22 + (yellow_W * r_count) + (yellow_Gap * r_count), yellow_H / 2)
 
+        # If at least 3 Players
         if player_amount_num >= 3:
-            text_write(str(gY_resources), PA_font_mid, yellow_X - 22, yellow_H*0.75)
-            text_write(str(gO_resources), PA_font_mid, yellow_X + (yellow_W*1) + yellow_Gap - 22, yellow_H*0.75)
-            text_write(str(gB_resources), PA_font_mid, yellow_X + (yellow_W*2) + (yellow_Gap*2) - 22, yellow_H*0.75)
-            text_write(str(gR_resources), PA_font_mid, yellow_X + (yellow_W*3) + (yellow_Gap*3) - 22, yellow_H*0.75)
+            # Green Counters
+            for g_count in range(4):
+                text_write(str(green_resources[g_count]), PA_font_mid, yellow_X - 22 + (yellow_W * g_count) + (yellow_Gap * g_count), yellow_H * 0.75)
 
+            # If 4 Players
             if player_amount_num == 4:
-                text_write(str(bY_resources), PA_font_mid, yellow_X - 22, yellow_H)
-                text_write(str(bO_resources), PA_font_mid, yellow_X + (yellow_W*1) + yellow_Gap - 22, yellow_H)
-                text_write(str(bB_resources), PA_font_mid, yellow_X + (yellow_W*2) + (yellow_Gap*2) - 22, yellow_H)
-                text_write(str(bR_resources), PA_font_mid, yellow_X + (yellow_W*3) + (yellow_Gap*3) - 22, yellow_H)
-
-
-        # 'Hardcore Mode'
-        hardcore_state = TINY_FONT.render(str(hardcore_setting), True, white)   # True / False Text
-        hardcore_txt = TINY_FONT.render('Hardcore mode:', True, white)          # Hardcore mode Text
-        event_txt = TINY_FONT.render(event_msg, True, black)                    # Random Events Text
-        event_button_txt = TINY_FONT.render("Random Event", True, white)        # Event Button Text
+                # Black Counters
+                for b_count in range(4):
+                    text_write(str(black_resources[b_count]), PA_font_mid, yellow_X - 22 + (yellow_W * b_count) + (yellow_Gap * b_count), yellow_H)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                # 'Hardcore Mode'
+                game_exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:    # Left click
 
-                pGet = ((pY_resources * 1) + (pO_resources * 2) + (pB_resources * 3) + (pR_resources * 4))
-                rGet = ((rY_resources * 1) + (rO_resources * 2) + (rB_resources * 3) + (rR_resources * 4))
-                gGet = ((gY_resources * 1) + (gO_resources * 2) + (gB_resources * 3) + (gR_resources * 4))
-                bGet = ((bY_resources * 1) + (bO_resources * 2) + (bB_resources * 3) + (bR_resources * 4))
+                # If end of round resources are on screen, turn it off, redraw background
+                if show_resource_gain:
+                    show_resource_gain = False
+                    background()
 
-                if hardcore_button.collidepoint(event.pos):     # If hardcore button is clicked
-                    background()                    # Refill background to white before redrawing
+                if hardcore_button.collidepoint(event.pos) and not event_active:     # If hardcore button is clicked
+                    background()                                # Redraw background before redrawing
                     hardcore_setting = not hardcore_setting     # Toggle hardcore_setting between True / False
                     if hardcore_setting:                        # if True
                         hardcore_color = (0, 255, 0)            # Green
                     else:                                       # Else
                         hardcore_color = red                    # Red
-            
-                elif event_button.collidepoint(event.pos) and not event_active and hardcore_setting:                 # If event button is clicked and an event is not already open
-                    event_active = True                                                         # Set event active to true
-                    background()                                                  			   # Refill background before redrawing
-                    event_msg = random.choice(event_list)                                       # Get a random event from event list
-                    pygame.draw.rect(gameDisplay, (50, 100, 100), event_background)             # Draw event background
-                    pygame.draw.rect(gameDisplay, (30, 30, 30), event_close)                    # Draw event closing button
-                    pygame.draw.line(gameDisplay, red, (event_close.x, event_close.y),          # Draw event closing button cross
-                                     (event_close.x + 28, event_close.y + 28), 2)
-                    pygame.draw.line(gameDisplay, red, (event_close.x, event_close.y+28),
-                                     (event_close.x + 28, event_close.y), 2)
-                    gameDisplay.blit(event_txt, (event_background.x+10, event_background.y+5))  # Blit random event text
 
-                elif event_close.collidepoint(event.pos):                                       # If event closing button is clicked
-                    event_active = False                                                        # Set event active to false
-                    background()
-                    # Reset
+                if event_button.collidepoint(event.pos) and not event_active and hardcore_setting:    # If event button is clicked and an event is not already open
+                    event_active = True                                                                 # Set event active to true
+                    background()                                                                        # Refill background before redrawing
+                    event_msg = random.choice(event_list)                                               # Get a random event from event list
+                    event_background = draw_square(display_width-280, display_height/4,
+                                                   250, 100,
+                                                   (60, 100, 100), white, event_msg)                    # Event background)
+                    event_close = draw_square(event_background.x + event_background.width - 30,
+                                              event_background.y, 30, 30, red, white)                   # Event closing button
 
-                elif next_p_rect.collidepoint(event.pos) and not event_active:
-                    next_player()
+                    pygame.draw.line(gameDisplay, shadow, (event_close.x+1, event_close.y+1), (event_close.x + 29, event_close.y + 29), 2)
+                    pygame.draw.line(gameDisplay, shadow, (event_close.x+1, event_close.y + 29), (event_close.x + 29, event_close.y+1), 2)  # Draw event closing button cross
+                    pygame.draw.line(gameDisplay, white, (event_close.x, event_close.y), (event_close.x + 28, event_close.y + 28), 2)
+                    pygame.draw.line(gameDisplay, white, (event_close.x, event_close.y + 28), (event_close.x + 28, event_close.y), 2)  # Draw event closing button cross
 
-                # Plus / Minus buttons
+                if event_close.collidepoint(event.pos) and event_active:   # If event closing button is clicked
+                    event_active = False                    # Set event active to false
+                    background()                            # Redraw background
 
-                # First Row
-                elif plus_minus_list[0][0][0][1] <= event.pos[1] < plus_minus_list[1][0][0][1]:
-                    # Yellow
-                    if plus_minus_list[0][0][0][0] <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)):
-                        pY_resources += 1
-                        background()
-                    elif plus_minus_list[0][0][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)*2):
-                        if pY_resources > 0:
-                            pY_resources -= 1
-                            background()
-                    # Orange
-                    elif plus_minus_list[0][2][0][0] <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)):
-                        pO_resources += 1
-                        background()
-                    elif plus_minus_list[0][2][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)*2):
-                        if pO_resources > 0:
-                            pO_resources -= 1
-                            background()
-                    # Blue
-                    elif plus_minus_list[0][4][0][0] <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)):
-                        pB_resources += 1
-                        background()
-                    elif plus_minus_list[0][4][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)*2):
-                        if pB_resources > 0:
-                            pB_resources -= 1
-                            background()
-                    # Red
-                    elif plus_minus_list[0][6][0][0] <= event.pos[0] < (plus_minus_list[0][6][0][0] + (yellow_W / 2)):
-                        pR_resources += 1
-                        background()
-                    elif plus_minus_list[0][6][0][0] + (yellow_W / 2) <= event.pos[0] < (
-                            plus_minus_list[0][6][0][0] + (yellow_W / 2) * 2):
-                        if pR_resources > 0:
-                            pR_resources -= 1
-                            background()
+                # If next round rect is clicked, increment turn counter, show each player's resources gained
+                elif round_rect.collidepoint(event.pos) and not event_active:
+                    next_round()
+                    show_resource_gain = True
+                # If End round button is clicked
+                elif end_rect.collidepoint(event.pos) and not event_active:
+                    leaderboard()
 
-                # Second Row
-                elif plus_minus_list[1][0][0][1] <= event.pos[1] < plus_minus_list[2][0][0][1]:
-                    # Yellow
-                    if plus_minus_list[0][0][0][0] <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)):
-                        rY_resources += 1
-                        background()
-                    elif plus_minus_list[0][0][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)*2):
-                        if rY_resources > 0:
-                            rY_resources -= 1
-                            background()
-                    # Orange
-                    elif plus_minus_list[0][2][0][0] <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)):
-                        rO_resources += 1
-                        background()
-                    elif plus_minus_list[0][2][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)*2):
-                        if rO_resources > 0:
-                            rO_resources -= 1
-                            background()
-                    # Blue
-                    elif plus_minus_list[0][4][0][0] <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)):
-                        rB_resources += 1
-                        background()
-                    elif plus_minus_list[0][4][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)*2):
-                        if rB_resources > 0:
-                            rB_resources -= 1
-                            background()
-                    # Red
-                    elif plus_minus_list[0][6][0][0] <= event.pos[0] < (plus_minus_list[0][6][0][0] + (yellow_W / 2)):
-                        rR_resources += 1
-                        background()
-                    elif plus_minus_list[0][6][0][0] + (yellow_W / 2) <= event.pos[0] < (
-                            plus_minus_list[0][6][0][0] + (yellow_W / 2) * 2):
-                        if rR_resources > 0:
-                            rR_resources -= 1
-                            background()
+                # Make Plus / Minus buttons interactive
+                pm_names = [purple_resources, red_resources, green_resources, black_resources]
 
-                # Third Row
-                elif plus_minus_list[2][0][0][1] <= event.pos[1] < plus_minus_list[3][0][0][1]:
-                    # Yellow
-                    if plus_minus_list[0][0][0][0] <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)):
-                        gY_resources += 1
-                        background()
-                    elif plus_minus_list[0][0][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)*2):
-                        if gY_resources > 0:
-                            gY_resources -= 1
-                            background()
-                    # Orange
-                    elif plus_minus_list[0][2][0][0] <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)):
-                        gO_resources += 1
-                        background()
-                    elif plus_minus_list[0][2][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)*2):
-                        if gO_resources > 0:
-                            gO_resources -= 1
-                            background()
-                    # Blue
-                    elif plus_minus_list[0][4][0][0] <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)):
-                        gB_resources += 1
-                        background()
-                    elif plus_minus_list[0][4][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)*2):
-                        if gB_resources > 0:
-                            gB_resources -= 1
-                            background()
-                    # Red
-                    elif plus_minus_list[0][6][0][0] <= event.pos[0] < (plus_minus_list[0][6][0][0] + (yellow_W / 2)):
-                        gR_resources += 1
-                        background()
-                    elif plus_minus_list[0][6][0][0] + (yellow_W / 2) <= event.pos[0] < (
-                            plus_minus_list[0][6][0][0] + (yellow_W / 2) * 2):
-                        if gR_resources > 0:
-                            gR_resources -= 1
-                            background()
+                for p_m_row in range(4):
+                    if plus_minus_list[p_m_row][0][0][1] <= event.pos[1] < plus_minus_list[min((p_m_row+1), 3)][0][0][1] + ((p_m_row//3)*((yellow_W / 2) * 2)):
 
-                # Fourth Row
-                elif plus_minus_list[3][0][0][1] <= event.pos[1] < plus_minus_list[3][0][0][1]+(yellow_W/2):
-                    # Yellow
-                    if plus_minus_list[0][0][0][0] <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)):
-                        bY_resources += 1
-                        background()
-                    elif plus_minus_list[0][0][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][0][0][0] + (yellow_W/2)*2):
-                        if bY_resources > 0:
-                            bY_resources -= 1
-                            background()
-                    # Orange
-                    elif plus_minus_list[0][2][0][0] <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)):
-                        bO_resources += 1
-                        background()
-                    elif plus_minus_list[0][2][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][2][0][0] + (yellow_W/2)*2):
-                        if bO_resources > 0:
-                            bO_resources -= 1
-                            background()
-                    # Blue
-                    elif plus_minus_list[0][4][0][0] <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)):
-                        bB_resources += 1
-                        background()
-                    elif plus_minus_list[0][4][0][0]+(yellow_W/2) <= event.pos[0] < (plus_minus_list[0][4][0][0] + (yellow_W/2)*2):
-                        if bB_resources > 0:
-                            bB_resources -= 1
-                            background()
-                    # Red
-                    elif plus_minus_list[0][6][0][0] <= event.pos[0] < (plus_minus_list[0][6][0][0] + (yellow_W / 2)):
-                        bR_resources += 1
-                        background()
-                    elif plus_minus_list[0][6][0][0] + (yellow_W / 2) <= event.pos[0] < (plus_minus_list[0][6][0][0] + (yellow_W / 2) * 2):
-                        if bR_resources > 0:
-                            bR_resources -= 1
-                            background()
-
-
-        # 'Hardcore Mode'
-        hardcore_button = pygame.Rect(890, 30, 60, 30)                                         # The "button" rect
-        hardcore_bg = pygame.Rect(hardcore_button.x - 160, hardcore_button.y - 5,              # Background rect, scaled to button rect
-                                  hardcore_button.width + 170, hardcore_button.height + 10)
-        pygame.draw.rect(gameDisplay, black, hardcore_bg)                                      # Draw background
-        pygame.draw.rect(gameDisplay, hardcore_color, hardcore_button)                         # Draw button
-        gameDisplay.blit(hardcore_state, (hardcore_button.x + 5, hardcore_button.y))           # Blit button state, position relative to button rect
-        gameDisplay.blit(hardcore_txt, (hardcore_button.x - 150, hardcore_button.y))           # Blit hardcore mode text, left of button rect
-
-
-        # Events
-        event_button = pygame.Rect(hardcore_button.x - 160, hardcore_button.y + 50,            # Event button
-                                   hardcore_button.width + 170, hardcore_button.height + 10)
-        event_background = pygame.Rect(display_width/4, display_height/4,                      # Event background
-                                   hardcore_button.width + 270, hardcore_button.height + 100)
-        event_close = pygame.Rect(event_background.x + event_background.width - 30,            # Event closing button
-                                  event_background.y, 30, 30)
-
-        if hardcore_setting:                                                                   # If hardcore is set to True
-            pygame.draw.rect(gameDisplay, (50, 130, 130), event_button)                        # Draw event button
-            gameDisplay.blit(event_button_txt, (event_button.x + 10, event_button.y + 5))      # Blit event button text
-        #'''
+                        for p_m_col in range(0, 7, 2):
+                            if plus_minus_list[0][p_m_col][0][0] <= event.pos[0] < (plus_minus_list[0][p_m_col][0][0] + (yellow_W / 2)):
+                                pm_names[p_m_row][int(p_m_col/2)] += 1
+                                background()
+                            elif plus_minus_list[0][p_m_col][0][0] + (yellow_W / 2) <= event.pos[0] < (plus_minus_list[0][p_m_col][0][0] + (yellow_W / 2) * 2):
+                                if pm_names[p_m_row][int(p_m_col/2)] > 0:
+                                    pm_names[p_m_row][int(p_m_col/2)] -= 1
+                                    background()
 
         pygame.display.update()
-        clock.tick(60)
+
+
+def leaderboard():
+    global current_screen
+    current_screen = "Leaderboard"
+
+    background()
 
 
 start_screen()
-
-
-exit()
