@@ -1,5 +1,6 @@
 import pygame
 import os
+
 pygame.init()
 
 
@@ -61,6 +62,7 @@ player_amount_y = 40
 player_amount_size = 26
 
 player_amount_num = 4  # Number of Players selected
+player_amount_done = False
 
 startPlayerBackground = pygame.Rect(player_amount_x-4, player_amount_y - 25, player_amount_size * 7, player_amount_size * 4)
 startPlayerBgBorder = pygame.Rect(startPlayerBackground.x-2, startPlayerBackground.y-2, startPlayerBackground.width+4, startPlayerBackground.height + 4)
@@ -102,7 +104,6 @@ yellow_H = 140              #
 yellow_Gap = 24             #
 yellow_x_margin = 10        #
 yellow_line_thickness = 2   #
-
 
 # Plus / Minus List
 plus_minus_list = [[[], [], [], [], [], [], [], []],

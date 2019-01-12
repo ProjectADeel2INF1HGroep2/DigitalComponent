@@ -1,4 +1,3 @@
-import pygame
 from local_variables import *
 from itertools import cycle
 pygame.init()
